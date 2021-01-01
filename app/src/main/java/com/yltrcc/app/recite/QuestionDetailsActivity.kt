@@ -21,7 +21,9 @@ import kotlinx.coroutines.launch
 
 class QuestionDetailsActivity: AppCompatActivity() {
 
-    val PAGE_URL = "https://www.ylcoder.top/api/random/getpage?nums=1"
+    private var PAGE_URL = "https://www.ylcoder.top/api/random/getpage?nums=1"
+
+    private lateinit var webView: WebView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,12 +46,11 @@ class QuestionDetailsActivity: AppCompatActivity() {
         async(Dispatchers.Default) { http.httpGET1(PAGE_URL) }.await()
             .let {
                 println(it)
-                val webView:WebView = findViewById(R.id.wb_content)
                 webView?.loadUrl(PAGE_URL)
             }
     }
     fun initWebView(){
-        val webView:WebView = findViewById(R.id.wb_content)
+        webView = findViewById(R.id.wb_content)
         webView?.loadUrl(PAGE_URL)
 
         val webClient = object : WebViewClient(){
@@ -95,9 +96,8 @@ class QuestionDetailsActivity: AppCompatActivity() {
         webView?.loadUrl(PAGE_URL)
 
         //设置字体大小
-        var settings:WebSettings =webView.getSettings()
-        settings.setSupportZoom(true);
-        settings.setTextSize(WebSettings.TextSize.LARGEST);
+        webSettings.setSupportZoom(true);
+        webSettings.setTextZoom(300)
     }
 
     //设置返回键的监听
@@ -113,6 +113,13 @@ class QuestionDetailsActivity: AppCompatActivity() {
             }
         }
         return false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        //释放资源
+        webView.destroy()
     }
 
 }
