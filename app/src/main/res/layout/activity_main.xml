@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/btn_java"
+            android:id="@+id/ll_java_base"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_margin="15dp"
