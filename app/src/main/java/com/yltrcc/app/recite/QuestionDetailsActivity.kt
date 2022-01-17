@@ -3,7 +3,6 @@ package com.yltrcc.app.recite
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Patterns.WEB_URL
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.WebResourceRequest
@@ -19,11 +18,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.net.URL
 
 class QuestionDetailsActivity: AppCompatActivity() {
 
-    val URL = "https://www.ylcoder.top/api/random/getpage?nums=2"
+    val PAGE_URL = "https://www.ylcoder.top/api/random/getpage?nums=1"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,16 +41,16 @@ class QuestionDetailsActivity: AppCompatActivity() {
     fun onParallelGetButtonClick() = GlobalScope.launch(Dispatchers.Main) {
         val http = HttpUtil()
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET1(URL) }.await()
+        async(Dispatchers.Default) { http.httpGET1(PAGE_URL) }.await()
             .let {
                 println(it)
                 val webView:WebView = findViewById(R.id.wb_content)
-                webView?.loadUrl(URL)
+                webView?.loadUrl(PAGE_URL)
             }
     }
     fun initWebView(){
         val webView:WebView = findViewById(R.id.wb_content)
-        webView?.loadUrl(URL)
+        webView?.loadUrl(PAGE_URL)
 
         val webClient = object : WebViewClient(){
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -94,7 +92,7 @@ class QuestionDetailsActivity: AppCompatActivity() {
 
         webView?.fitsSystemWindows = true
         webView?.setLayerType(View.LAYER_TYPE_HARDWARE,null)
-        webView?.loadUrl(URL)
+        webView?.loadUrl(PAGE_URL)
 
         //设置字体大小
         var settings:WebSettings =webView.getSettings()
