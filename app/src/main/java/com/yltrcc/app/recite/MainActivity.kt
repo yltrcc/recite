@@ -15,6 +15,13 @@ class MainActivity : AppCompatActivity() {
 
         val javaBase: LinearLayout = findViewById(R.id.ll_java_base)
         javaBase.setOnClickListener {
+            /*val intent = Intent()
+            intent.setClass(this@MainActivity, QuestionDetailsActivity::class.java)
+            startActivity(intent)*/
+        }
+
+        val javaRandom: LinearLayout = findViewById(R.id.ll_java_random)
+        javaRandom.setOnClickListener {
             val intent = Intent()
             intent.setClass(this@MainActivity, QuestionDetailsActivity::class.java)
             startActivity(intent)
