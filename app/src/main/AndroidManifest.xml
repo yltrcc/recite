@@ -27,6 +27,7 @@
         </activity>
         <activity android:name=".QuestionDetailsActivity"/>
         <activity android:name=".QuestionTestActivity"/>
+        <activity android:name=".PhotoActivity"/>
     </application>
 
 </manifest>

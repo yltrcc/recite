@@ -1,13 +1,12 @@
 package com.yltrcc.app.recite
 
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import android.webkit.WebResourceRequest
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.yltrcc.app.recite.utils.ConstantUtils
@@ -18,10 +17,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 
+
 class QuestionDetailsActivity : AppCompatActivity() {
 
 
     private lateinit var webView: WebView
+    lateinit var ctx: Context
 
     private var randomId: Int = -1
     private var count: Int = 2
@@ -32,7 +33,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_details)
-
+        ctx = this
         val nextOne: Button = findViewById(R.id.bun_next_one)
         nextOne.setOnClickListener(object : View.OnClickListener {
             override
@@ -75,6 +76,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
                         "white-space: -o-pre-wrap; /* Opera7 */\n" +
                         "}\n" +
                         "p { word-wrap:break-word; }\n" +
+                        "img{width:320px !important;}\n" +
                         "</style>\n" +
                         "</head><body style=\"word-wrap:break-word;font-family:Arial;width: 320px;padding-left: 10px;padding-right: 10px;\"> " +
                     it + "</body>", "text/html", "UTF-8")
@@ -147,6 +149,39 @@ class QuestionDetailsActivity : AppCompatActivity() {
         //设置字体大小
         webSettings.setSupportZoom(true)
         webSettings.setTextZoom(100)
+
+        //支持JS
+        webView.setWebChromeClient(WebChromeClient())
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                webView.loadUrl("javascript:(function(){" +
+                        "var imgs = document.getElementsByTagName(\"img\");\n" +
+                        "for(var i = 0; i < imgs.length; i++)\n" +
+                        "{\n" +
+                        "\timgs[i].onclick = function()\n" +
+                        "\t{\n" +
+                        "\t\tQuestionDetailsActivity.startPhotoActivity(this.src);\n" +
+                        "\t\t\n" +
+                        "\t}\n" +
+                        "}"
+                        + "})()");
+
+                //webView.loadUrl("javascript:alert(234567)")
+            }
+        }
+        webView.addJavascriptInterface(JavaScriptInterface(ctx), "QuestionDetailsActivity")
+    }
+
+    class JavaScriptInterface(val ctx: Context) {
+
+        @android.webkit.JavascriptInterface
+        fun startPhotoActivity(imageUrl:String) {
+            val intent = Intent()
+            intent.putExtra("image_url", imageUrl)
+            intent.setClass(ctx, PhotoActivity::class.java)
+            ctx.startActivity(intent)
+        }
+
     }
 
     //设置返回键的监听
