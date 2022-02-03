@@ -33,7 +33,7 @@
                 android:fontFamily="sans-serif-thin"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="随机来一提"
+                android:text="随机来一题"
                 android:textColor="@color/color_item_normal" />
         </LinearLayout>
 

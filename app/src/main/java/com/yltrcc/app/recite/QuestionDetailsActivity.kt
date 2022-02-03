@@ -1,6 +1,5 @@
 package com.yltrcc.app.recite
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -10,57 +9,96 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.eclipsesource.json.Json
+import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.HttpUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.util.*
 
-class QuestionDetailsActivity: AppCompatActivity() {
+class QuestionDetailsActivity : AppCompatActivity() {
 
-    private var PAGE_URL = "https://www.ylcoder.top/api/random/getpage?nums=1"
 
     private lateinit var webView: WebView
+
+    private var randomId: Int = -1
+    private var count: Int = 2
+    private var PAGE_URL = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_PAGE;
+    private var PAGE_COUNT = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_COUNT;
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_details)
 
-        val nextOne:Button = findViewById(R.id.bun_next_one)
+        val nextOne: Button = findViewById(R.id.bun_next_one)
         nextOne.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
+
                 onParallelGetButtonClick()
             }
         })
         initWebView()
+
+        val ReturnHome: Button = findViewById(R.id.bun_return_home)
+        ReturnHome.setOnClickListener(object : View.OnClickListener {
+            override
+            fun onClick(view: View) {
+                finish()
+            }
+        })
     }
 
     //HTTP GET
     fun onParallelGetButtonClick() = GlobalScope.launch(Dispatchers.Main) {
         val http = HttpUtil()
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET1(PAGE_URL) }.await()
-            .let {
-                println(it)
-                webView?.loadUrl(PAGE_URL)
+        async(Dispatchers.Default) { http.httpGET1(PAGE_URL + "?id=" + randomId) }.await()
+            ?.let {
+                //判断是否超出最大值
+                if (randomId + 1 >= count) {
+                    randomId = Random().nextInt(count) + 1
+                }else {
+                    randomId = randomId + 1
+                }
+                webView?.loadUrl(PAGE_URL + "?id=" + randomId)
             }
     }
-    fun initWebView(){
-        webView = findViewById(R.id.wb_content)
-        webView?.loadUrl(PAGE_URL)
 
-        val webClient = object : WebViewClient(){
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+    //HTTP GET
+    fun getCount() = GlobalScope.launch(Dispatchers.Main) {
+        val http = HttpUtil()
+        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
+        async(Dispatchers.Default) { http.httpGET1(PAGE_COUNT) }.await()
+            ?.let {
+                print(it)
+                count = it.toInt()
+            }
+    }
+
+    fun initWebView() {
+        //获取总的题库数
+        getCount()
+        //初始化 randomId 值
+        val random = Random()
+        randomId = random.nextInt(count) + 1
+        webView = findViewById(R.id.wb_content)
+        webView?.loadUrl(PAGE_URL + "?id=" + randomId)
+
+        val webClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
                 return false
             }
         }
 
         //下面这些直接复制就好
-        webView?.webViewClient=webClient
+        webView?.webViewClient = webClient
 
         var webSettings = webView!!.settings
         webSettings.javaScriptEnabled = true  // 开启 JavaScript 交互
@@ -92,8 +130,8 @@ class QuestionDetailsActivity: AppCompatActivity() {
         webSettings.setGeolocationEnabled(true) // 是否使用地理位置
 
         webView?.fitsSystemWindows = true
-        webView?.setLayerType(View.LAYER_TYPE_HARDWARE,null)
-        webView?.loadUrl(PAGE_URL)
+        webView?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        webView?.loadUrl(PAGE_URL + "?id=" + randomId)
 
         //设置字体大小
         webSettings.setSupportZoom(true);
@@ -102,12 +140,12 @@ class QuestionDetailsActivity: AppCompatActivity() {
 
     //设置返回键的监听
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        val webView:WebView = findViewById(R.id.wb_content)
-        if (keyCode== KeyEvent.KEYCODE_BACK){
-            if (webView!!.canGoBack()){
+        val webView: WebView = findViewById(R.id.wb_content)
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (webView!!.canGoBack()) {
                 webView!!.goBack()  //返回上一个页面
                 return true
-            }else{
+            } else {
                 finish()
                 return true
             }
