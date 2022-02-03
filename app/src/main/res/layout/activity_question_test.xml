@@ -12,15 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:background="#FFFFFF">
         <WebView
             android:id="@+id/wb_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:scrollbarSize="1dp"
-
-            android:scrollbarStyle="outsideOverlay"/>
+            android:scrollbars="none"/>
     </ScrollView>
 
     <LinearLayout

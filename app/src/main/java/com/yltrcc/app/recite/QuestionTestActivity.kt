@@ -18,15 +18,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 
-class QuestionDetailsActivity : AppCompatActivity() {
+class QuestionTestActivity : AppCompatActivity() {
 
 
     private lateinit var webView: WebView
-
-    private var randomId: Int = -1
-    private var count: Int = 2
-    private var PAGE_URL = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_PAGE;
-    private var PAGE_COUNT = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_COUNT;
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,71 +29,19 @@ class QuestionDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_question_details)
 
         val nextOne: Button = findViewById(R.id.bun_next_one)
-        nextOne.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-
-                onParallelGetButtonClick()
-            }
-        })
         initWebView()
-        //初始化 webview后模拟点击下一个
-        nextOne.performClick()
-        val ReturnHome: Button = findViewById(R.id.bun_return_home)
-        ReturnHome.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                finish()
-            }
-        })
+
+
     }
 
-    //HTTP GET
-    fun onParallelGetButtonClick() = GlobalScope.launch(Dispatchers.Main) {
-        val http = HttpUtil()
-        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET1(PAGE_URL + "?id=" + randomId) }.await()
-            ?.let {
-                //判断是否超出最大值
-                if (randomId + 1 >= count) {
-                    randomId = Random().nextInt(count) + 1
-                }else {
-                    randomId = randomId + 1
-                }
-                webView?.loadData("<head>\n" +
-                        "<style type=\"text/css\">\n" +
-                        "pre {\n" +
-                        "white-space: pre-wrap; /* css-3 */\n" +
-                        "word-wrap: break-word; /* InternetExplorer5.5+ */\n" +
-                        "white-space: -moz-pre-wrap; /* Mozilla,since1999 */\n" +
-                        "white-space: -pre-wrap; /* Opera4-6 */\n" +
-                        "white-space: -o-pre-wrap; /* Opera7 */\n" +
-                        "}\n" +
-                        "p { word-wrap:break-word; }\n" +
-                        "</style>\n" +
-                        "</head><body style=\"word-wrap:break-word;font-family:Arial;width: 320px;padding-left: 10px;padding-right: 10px;\"> " +
-                    it + "</body>", "text/html", "UTF-8")
-            }
-    }
 
-    //HTTP GET
-    fun getCount() = GlobalScope.launch(Dispatchers.Main) {
-        val http = HttpUtil()
-        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET1(PAGE_COUNT) }.await()
-            ?.let {
-                print(it)
-                count = it.toInt()
-            }
-    }
 
     fun initWebView() {
-        //获取总的题库数
-        getCount()
-        //初始化 randomId 值
-        val random = Random()
-        randomId = random.nextInt(count) + 1
+
         webView = findViewById(R.id.wb_content)
+        webView?.loadData("<body style=\"word-wrap:break-word;font-family:Arial;width: 320px;\"> \n" +
+                "<p>Spring Web MVC 框架提供”模型-视图-控制器”( Model-View-Controller )架构和随时可用的组件，用于开发灵活且松散耦合的 Web 应用程序。<br>MVC 模式有助于分离应用程序的不同方面，如输入逻辑，业务逻辑和 UI 逻辑，同时在所有这些元素之间提供松散耦合。</p>\n" +
+                "</body>\n", "text/html", "UTF-8")
 
         val webClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(
@@ -119,9 +62,9 @@ class QuestionDetailsActivity : AppCompatActivity() {
         webSettings.setAppCachePath(cacheDir.path) // 设置应用缓存路径
 
         // 缩放操作
-        webSettings.setSupportZoom(false) // 支持缩放 默认为true 是下面那个的前提
-        webSettings.builtInZoomControls = false // 设置内置的缩放控件 若为false 则该WebView不可缩放
-        webSettings.displayZoomControls = true // 隐藏原生的缩放控件
+        webSettings.setSupportZoom(true) // 支持缩放 默认为true 是下面那个的前提
+        webSettings.builtInZoomControls = true // 设置内置的缩放控件 若为false 则该WebView不可缩放
+        webSettings.displayZoomControls = false // 隐藏原生的缩放控件
 
         webSettings.blockNetworkImage = false // 禁止或允许WebView从网络上加载图片
         webSettings.loadsImagesAutomatically = true // 支持自动加载图片
@@ -143,9 +86,9 @@ class QuestionDetailsActivity : AppCompatActivity() {
 
         webView?.fitsSystemWindows = true
         webView?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        //webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
         //设置字体大小
-        webSettings.setSupportZoom(true)
+        webSettings.setSupportZoom(true);
         webSettings.setTextZoom(100)
     }
 
