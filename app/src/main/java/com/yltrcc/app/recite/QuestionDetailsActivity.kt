@@ -129,7 +129,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
     //判断是否是横屏
     fun isScreenOriatation(): Boolean {
         return ctx.getResources()
-            .getConfiguration().orientation === Configuration.ORIENTATION_PORTRAIT
+            .getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT
     }
 
 
