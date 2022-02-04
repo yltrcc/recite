@@ -27,14 +27,9 @@ class QuestionDetailsActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
     lateinit var ctx: Context
-
     private var randomId: Int = -1
-    //本轮已点击次数
-    private var roundCount: Int = 1
     private var count: Int = 2
     private var PAGE_URL = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_PAGE
-    //一轮最大点击次数，超出之后重新计数
-    private var ROUND_COUNT_MAX = 10
     private var PHONE_WIDTH = "320px"
     private var PHONE_LANDSCAPE_WIDTH = "530px"
     private var PANEL_WIDTH = "550px"
@@ -50,42 +45,58 @@ class QuestionDetailsActivity : AppCompatActivity() {
         ctx = this
         //接收当前题库总数量
         count = intent.getIntExtra("count", 2)
-        val nextOne: Button = findViewById(R.id.bun_next_one)
+        val nextOne: Button = findViewById(R.id.btn_next_one)
+        val randomOne: Button = findViewById(R.id.btn_random_one)
+        val ReturnHome: Button = findViewById(R.id.btn_return_home)
+
+
         nextOne.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
-                onParallelGetButtonClick()
+                nextOneClick()
             }
         })
-        //初始化屏幕值
-        if (isPad()) {
-            //在判断横屏
-            if (isScreenOriatation()) {
-                nowWidth = PANEL_WIDTH
-                nowFontSize = PANEL_FONT_SIZE
-            }else {
-                nowWidth = PANEL_LANDSCAPE_WIDTH
-                nowFontSize = PANEL_LANDSCAPE_FONT_SIZE
+        randomOne.setOnClickListener(object : View.OnClickListener {
+            override
+            fun onClick(view: View) {
+                randomOneClick()
             }
-        }else {
-            //在判断横屏
-            if (isScreenOriatation()) {
-                nowWidth = PHONE_WIDTH
-            }else {
-                nowWidth = PHONE_LANDSCAPE_WIDTH
-            }
-        }
-        initWebView()
-        //初始化 webview后模拟点击
-        nextOne.performClick()
-        val ReturnHome: Button = findViewById(R.id.bun_return_home)
+        })
         ReturnHome.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
                 finish()
             }
         })
+        init()
+        //初始化 webview后模拟点击
+        nextOne.performClick()
+    }
 
+    fun init() {
+        initWidth()
+        initWebView()
+    }
+
+    fun initWidth() {
+        //初始化屏幕值
+        if (isPad()) {
+            //在判断横屏
+            if (isScreenOriatation()) {
+                nowWidth = PANEL_WIDTH
+                nowFontSize = PANEL_FONT_SIZE
+            } else {
+                nowWidth = PANEL_LANDSCAPE_WIDTH
+                nowFontSize = PANEL_LANDSCAPE_FONT_SIZE
+            }
+        } else {
+            //在判断横屏
+            if (isScreenOriatation()) {
+                nowWidth = PHONE_WIDTH
+            } else {
+                nowWidth = PHONE_LANDSCAPE_WIDTH
+            }
+        }
     }
 
     /**
@@ -102,10 +113,10 @@ class QuestionDetailsActivity : AppCompatActivity() {
         windowManager.defaultDisplay.getMetrics(metrics)
         val height = metrics.heightPixels
         val width = metrics.widthPixels
-        val dm:DisplayMetrics  = DisplayMetrics()
+        val dm: DisplayMetrics = DisplayMetrics()
         display?.getMetrics(dm);
-        val x = Math.pow((dm.widthPixels/dm.xdpi).toDouble(), 2.0)
-        val y = Math.pow((dm.heightPixels/dm.ydpi).toDouble(), 2.0)
+        val x = Math.pow((dm.widthPixels / dm.xdpi).toDouble(), 2.0)
+        val y = Math.pow((dm.heightPixels / dm.ydpi).toDouble(), 2.0)
         // 屏幕尺寸
         val screenInches = Math.sqrt(x + y)
         // 大于6尺寸则为Pad
@@ -114,26 +125,58 @@ class QuestionDetailsActivity : AppCompatActivity() {
         }
         return false;
     }
+
     //判断是否是横屏
     fun isScreenOriatation(): Boolean {
-        return ctx.getResources().getConfiguration().orientation === Configuration.ORIENTATION_PORTRAIT
+        return ctx.getResources()
+            .getConfiguration().orientation === Configuration.ORIENTATION_PORTRAIT
     }
 
 
     //HTTP GET
-    fun onParallelGetButtonClick() = GlobalScope.launch(Dispatchers.Main) {
+    fun nextOneClick() = GlobalScope.launch(Dispatchers.Main) {
+
+        //判断是否超出最大值
+        if (randomId + 1 < count) {
+            randomId = randomId + 1
+        } else {
+            randomId = Random().nextInt(count) + 1
+        }
+
         val http = HttpUtil()
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
         async(Dispatchers.Default) { http.httpGET1(PAGE_URL + "?id=" + randomId) }.await()
             ?.let {
-                //判断是否超出最大值
-                if (randomId + 1 < count && roundCount < ROUND_COUNT_MAX) {
-                    randomId = randomId + 1
-                    roundCount++
-                } else {
-                    randomId = Random().nextInt(count) + 1
-                    roundCount = 1
-                }
+
+                webView?.loadData(
+                    "<head>\n" +
+                            "<style type=\"text/css\">\n" +
+                            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n" +
+                            "pre {\n" +
+                            "white-space: pre-wrap; /* css-3 */\n" +
+                            "word-wrap: break-word; /* InternetExplorer5.5+ */\n" +
+                            "white-space: -moz-pre-wrap; /* Mozilla,since1999 */\n" +
+                            "white-space: -pre-wrap; /* Opera4-6 */\n" +
+                            "white-space: -o-pre-wrap; /* Opera7 */\n" +
+                            "}\n" +
+                            "p { word-wrap:break-word; }\n" +
+                            "img{width:" + nowWidth + " !important;}\n" +
+                            "</style>\n" +
+                            "</head><body style=\"word-wrap:break-word;font-family:Arial;width: " + nowWidth + ";padding-left: 10px;padding-right: 10px;\"> " +
+                            it + "</body>", "text/html", "UTF-8"
+                )
+            }
+    }
+
+    //HTTP GET
+    fun randomOneClick() = GlobalScope.launch(Dispatchers.Main) {
+
+        randomId = Random().nextInt(count) + 1
+
+        val http = HttpUtil()
+        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
+        async(Dispatchers.Default) { http.httpGET1(PAGE_URL + "?id=" + randomId) }.await()
+            ?.let {
                 webView?.loadData(
                     "<head>\n" +
                             "<style type=\"text/css\">\n" +
