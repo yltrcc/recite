@@ -29,9 +29,12 @@ class QuestionDetailsActivity : AppCompatActivity() {
     lateinit var ctx: Context
 
     private var randomId: Int = -1
+    //本轮已点击次数
+    private var roundCount: Int = 1
     private var count: Int = 2
-    private var PAGE_URL = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_PAGE;
-    private var PAGE_COUNT = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_COUNT;
+    private var PAGE_URL = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_PAGE
+    //一轮最大点击次数，超出之后重新计数
+    private var ROUND_COUNT_MAX = 10
     private var PHONE_WIDTH = "320px"
     private var PHONE_LANDSCAPE_WIDTH = "530px"
     private var PANEL_WIDTH = "550px"
@@ -39,17 +42,18 @@ class QuestionDetailsActivity : AppCompatActivity() {
     private var PANEL_LANDSCAPE_FONT_SIZE = 100
     private var PANEL_LANDSCAPE_WIDTH = "940px"
     private lateinit var nowWidth: String
-    private var nowFontSize: Int = 0
+    private var nowFontSize: Int = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_details)
         ctx = this
+        //接收当前题库总数量
+        count = intent.getIntExtra("count", 2)
         val nextOne: Button = findViewById(R.id.bun_next_one)
         nextOne.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
-
                 onParallelGetButtonClick()
             }
         })
@@ -72,7 +76,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
             }
         }
         initWebView()
-        //初始化 webview后模拟点击下一个
+        //初始化 webview后模拟点击
         nextOne.performClick()
         val ReturnHome: Button = findViewById(R.id.bun_return_home)
         ReturnHome.setOnClickListener(object : View.OnClickListener {
@@ -123,10 +127,12 @@ class QuestionDetailsActivity : AppCompatActivity() {
         async(Dispatchers.Default) { http.httpGET1(PAGE_URL + "?id=" + randomId) }.await()
             ?.let {
                 //判断是否超出最大值
-                if (randomId + 1 >= count) {
-                    randomId = Random().nextInt(count) + 1
-                } else {
+                if (randomId + 1 < count && roundCount < ROUND_COUNT_MAX) {
                     randomId = randomId + 1
+                    roundCount++
+                } else {
+                    randomId = Random().nextInt(count) + 1
+                    roundCount = 1
                 }
                 webView?.loadData(
                     "<head>\n" +
@@ -148,20 +154,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
             }
     }
 
-    //HTTP GET
-    fun getCount() = GlobalScope.launch(Dispatchers.Main) {
-        val http = HttpUtil()
-        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET1(PAGE_COUNT) }.await()
-            ?.let {
-                print(it)
-                count = it.toInt()
-            }
-    }
-
     fun initWebView() {
-        //获取总的题库数
-        getCount()
         //初始化 randomId 值
         val random = Random()
         randomId = random.nextInt(count) + 1
