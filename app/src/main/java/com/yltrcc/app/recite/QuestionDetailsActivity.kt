@@ -2,10 +2,14 @@ package com.yltrcc.app.recite
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.view.Display
 import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
 import android.webkit.*
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -28,7 +32,14 @@ class QuestionDetailsActivity : AppCompatActivity() {
     private var count: Int = 2
     private var PAGE_URL = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_PAGE;
     private var PAGE_COUNT = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_COUNT;
-
+    private var PHONE_WIDTH = "320px"
+    private var PHONE_LANDSCAPE_WIDTH = "530px"
+    private var PANEL_WIDTH = "550px"
+    private var PANEL_FONT_SIZE = 100
+    private var PANEL_LANDSCAPE_FONT_SIZE = 100
+    private var PANEL_LANDSCAPE_WIDTH = "940px"
+    private lateinit var nowWidth: String
+    private var nowFontSize: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +53,24 @@ class QuestionDetailsActivity : AppCompatActivity() {
                 onParallelGetButtonClick()
             }
         })
+        //初始化屏幕值
+        if (isPad()) {
+            //在判断横屏
+            if (isScreenOriatation()) {
+                nowWidth = PANEL_WIDTH
+                nowFontSize = PANEL_FONT_SIZE
+            }else {
+                nowWidth = PANEL_LANDSCAPE_WIDTH
+                nowFontSize = PANEL_LANDSCAPE_FONT_SIZE
+            }
+        }else {
+            //在判断横屏
+            if (isScreenOriatation()) {
+                nowWidth = PHONE_WIDTH
+            }else {
+                nowWidth = PHONE_LANDSCAPE_WIDTH
+            }
+        }
         initWebView()
         //初始化 webview后模拟点击下一个
         nextOne.performClick()
@@ -52,7 +81,40 @@ class QuestionDetailsActivity : AppCompatActivity() {
                 finish()
             }
         })
+
     }
+
+    /**
+     * 判断是否为平板
+     */
+    fun isPad(): Boolean {
+        val wm: WindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display: Display? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            ctx.getDisplay()
+        } else {
+            wm.getDefaultDisplay()
+        }
+        val metrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(metrics)
+        val height = metrics.heightPixels
+        val width = metrics.widthPixels
+        val dm:DisplayMetrics  = DisplayMetrics()
+        display?.getMetrics(dm);
+        val x = Math.pow((dm.widthPixels/dm.xdpi).toDouble(), 2.0)
+        val y = Math.pow((dm.heightPixels/dm.ydpi).toDouble(), 2.0)
+        // 屏幕尺寸
+        val screenInches = Math.sqrt(x + y)
+        // 大于6尺寸则为Pad
+        if (screenInches >= 7.0) {
+            return true;
+        }
+        return false;
+    }
+    //判断是否是横屏
+    fun isScreenOriatation(): Boolean {
+        return ctx.getResources().getConfiguration().orientation === Configuration.ORIENTATION_PORTRAIT
+    }
+
 
     //HTTP GET
     fun onParallelGetButtonClick() = GlobalScope.launch(Dispatchers.Main) {
@@ -63,23 +125,26 @@ class QuestionDetailsActivity : AppCompatActivity() {
                 //判断是否超出最大值
                 if (randomId + 1 >= count) {
                     randomId = Random().nextInt(count) + 1
-                }else {
+                } else {
                     randomId = randomId + 1
                 }
-                webView?.loadData("<head>\n" +
-                        "<style type=\"text/css\">\n" +
-                        "pre {\n" +
-                        "white-space: pre-wrap; /* css-3 */\n" +
-                        "word-wrap: break-word; /* InternetExplorer5.5+ */\n" +
-                        "white-space: -moz-pre-wrap; /* Mozilla,since1999 */\n" +
-                        "white-space: -pre-wrap; /* Opera4-6 */\n" +
-                        "white-space: -o-pre-wrap; /* Opera7 */\n" +
-                        "}\n" +
-                        "p { word-wrap:break-word; }\n" +
-                        "img{width:320px !important;}\n" +
-                        "</style>\n" +
-                        "</head><body style=\"word-wrap:break-word;font-family:Arial;width: 320px;padding-left: 10px;padding-right: 10px;\"> " +
-                    it + "</body>", "text/html", "UTF-8")
+                webView?.loadData(
+                    "<head>\n" +
+                            "<style type=\"text/css\">\n" +
+                            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n" +
+                            "pre {\n" +
+                            "white-space: pre-wrap; /* css-3 */\n" +
+                            "word-wrap: break-word; /* InternetExplorer5.5+ */\n" +
+                            "white-space: -moz-pre-wrap; /* Mozilla,since1999 */\n" +
+                            "white-space: -pre-wrap; /* Opera4-6 */\n" +
+                            "white-space: -o-pre-wrap; /* Opera7 */\n" +
+                            "}\n" +
+                            "p { word-wrap:break-word; }\n" +
+                            "img{width:" + nowWidth + " !important;}\n" +
+                            "</style>\n" +
+                            "</head><body style=\"word-wrap:break-word;font-family:Arial;width: " + nowWidth + ";padding-left: 10px;padding-right: 10px;\"> " +
+                            it + "</body>", "text/html", "UTF-8"
+                )
             }
     }
 
@@ -148,23 +213,25 @@ class QuestionDetailsActivity : AppCompatActivity() {
         //webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
         //设置字体大小
         webSettings.setSupportZoom(true)
-        webSettings.setTextZoom(100)
+        webSettings.setTextZoom(nowFontSize)
 
         //支持JS
         webView.setWebChromeClient(WebChromeClient())
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
-                webView.loadUrl("javascript:(function(){" +
-                        "var imgs = document.getElementsByTagName(\"img\");\n" +
-                        "for(var i = 0; i < imgs.length; i++)\n" +
-                        "{\n" +
-                        "\timgs[i].onclick = function()\n" +
-                        "\t{\n" +
-                        "\t\tQuestionDetailsActivity.startPhotoActivity(this.src);\n" +
-                        "\t\t\n" +
-                        "\t}\n" +
-                        "}"
-                        + "})()");
+                webView.loadUrl(
+                    "javascript:(function(){" +
+                            "var imgs = document.getElementsByTagName(\"img\");\n" +
+                            "for(var i = 0; i < imgs.length; i++)\n" +
+                            "{\n" +
+                            "\timgs[i].onclick = function()\n" +
+                            "\t{\n" +
+                            "\t\tQuestionDetailsActivity.startPhotoActivity(this.src);\n" +
+                            "\t\t\n" +
+                            "\t}\n" +
+                            "}"
+                            + "})()"
+                );
 
                 //webView.loadUrl("javascript:alert(234567)")
             }
@@ -175,7 +242,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
     class JavaScriptInterface(val ctx: Context) {
 
         @android.webkit.JavascriptInterface
-        fun startPhotoActivity(imageUrl:String) {
+        fun startPhotoActivity(imageUrl: String) {
             val intent = Intent()
             intent.putExtra("image_url", imageUrl)
             intent.setClass(ctx, PhotoActivity::class.java)
