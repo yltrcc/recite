@@ -3,16 +3,13 @@ package com.yltrcc.app.recite
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.view.View
 import android.content.Intent
+import android.os.Bundle
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.yltrcc.app.recite.adapter.CategoryAdapter
 import com.yltrcc.app.recite.adapter.QuestionAdapter
-import com.yltrcc.app.recite.entity.QuestionCategoryEntity
 import com.yltrcc.app.recite.entity.QuestionEntity
 import com.yltrcc.app.recite.entity.Response
 import com.yltrcc.app.recite.utils.ConstantUtils
@@ -28,6 +25,7 @@ class QuestionListActivity : AppCompatActivity() {
     private var queryUrl = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERY_BY_CATEGORY
     private lateinit var data: List<QuestionEntity>
     private lateinit var ctx: Context
+    private var categoryId:Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +33,7 @@ class QuestionListActivity : AppCompatActivity() {
 
         //接收 intent
         val categoryName = intent.getStringExtra("categoryName")
-        val categoryId = intent.getLongExtra("categoryId", 0)
+        categoryId = intent.getLongExtra("categoryId", 0)
         queryUrl = queryUrl + "?categoryId=" + categoryId
         ctx = this
         queryByCateogry()
@@ -63,8 +61,13 @@ class QuestionListActivity : AppCompatActivity() {
                 listview.adapter = adapter
                 listview.setOnItemClickListener { parent, view, position, id ->
                     val entity:QuestionEntity = data[position]
-                    Toast.makeText(ctx, "Clicked item :" + " " + position + " id: " + id + " name: " + entity.articleTitle, Toast.LENGTH_SHORT).show()
-
+                    //Toast.makeText(ctx, "Clicked item :" + " " + position + " id: " + id + " name: " + entity.articleTitle, Toast.LENGTH_SHORT).show()
+                    //# 跳转端
+                    val intent = Intent()
+                    intent.setClass(ctx, QuestionDetailsActivity::class.java)
+                    intent.putExtra("content", entity.articleContent)
+                    intent.putExtra("categoryId", categoryId)
+                    ctx.startActivity(intent)
                 }
                 progressDialog.dismiss();//去掉加载框
             }

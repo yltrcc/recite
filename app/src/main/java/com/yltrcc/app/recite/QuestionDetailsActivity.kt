@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 import java.util.*
 
 
@@ -30,6 +31,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
     private var randomId: Int = -1
     private var count: Int = 2
     private var PAGE_URL = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_PAGE
+    private var PAGE_COUNT = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_COUNT
     private var PHONE_WIDTH = "320px"
     private var PHONE_LANDSCAPE_WIDTH = "530px"
     private var PANEL_WIDTH = "550px"
@@ -38,6 +40,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
     private var PANEL_LANDSCAPE_WIDTH = "940px"
     private lateinit var nowWidth: String
     private var nowFontSize: Int = 100
+    private var categoryId:Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +48,15 @@ class QuestionDetailsActivity : AppCompatActivity() {
         ctx = this
         //接收当前题库总数量
         count = intent.getIntExtra("count", 2)
+        //接收内容
+        var content = intent.getStringExtra("content")
+        //接收分类Id
+        categoryId = intent.getLongExtra("count", 0)
+
+
         val nextOne: Button = findViewById(R.id.btn_next_one)
         val randomOne: Button = findViewById(R.id.btn_random_one)
-        val ReturnHome: Button = findViewById(R.id.btn_return_home)
+        val goBack: Button = findViewById(R.id.btn_go_back)
 
 
         nextOne.setOnClickListener(object : View.OnClickListener {
@@ -62,22 +71,55 @@ class QuestionDetailsActivity : AppCompatActivity() {
                 randomOneClick()
             }
         })
-        ReturnHome.setOnClickListener(object : View.OnClickListener {
+        goBack.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
                 finish()
             }
         })
         init()
-        //初始化 webview后模拟点击
-        nextOne.performClick()
+        if (content == null) {
+            //说明是从随机页跳转的
+            //初始化 webview后模拟点击
+            nextOne.performClick()
+        }else {
+
+            webView?.loadData(
+                "<head>\n" +
+                        "<style type=\"text/css\">\n" +
+                        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n" +
+                        "pre {\n" +
+                        "white-space: pre-wrap; /* css-3 */\n" +
+                        "word-wrap: break-word; /* InternetExplorer5.5+ */\n" +
+                        "white-space: -moz-pre-wrap; /* Mozilla,since1999 */\n" +
+                        "white-space: -pre-wrap; /* Opera4-6 */\n" +
+                        "white-space: -o-pre-wrap; /* Opera7 */\n" +
+                        "}\n" +
+                        "p { word-wrap:break-word; }\n" +
+                        "img{width:" + nowWidth + " !important;}\n" +
+                        "</style>\n" +
+                        "</head><body style=\"word-wrap:break-word;font-family:Arial;width: " + nowWidth + ";padding-left: 10px;padding-right: 10px;\"> " +
+                        content + "</body>", "text/html", "UTF-8"
+            )
+            //初始化总数
+            getCount()
+        }
     }
 
     fun init() {
         initWidth()
         initWebView()
     }
-
+    //HTTP GET
+    fun getCount() = GlobalScope.launch(Dispatchers.Main) {
+        val http = HttpUtil()
+        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
+        async(Dispatchers.Default) { http.httpGET1(PAGE_COUNT) }.await()
+            ?.let {
+                print(it)
+                count = it.toInt()
+            }
+    }
     fun initWidth() {
         //初始化屏幕值
         if (isPad()) {
@@ -147,7 +189,6 @@ class QuestionDetailsActivity : AppCompatActivity() {
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
         async(Dispatchers.Default) { http.httpGET1(PAGE_URL + "?id=" + randomId) }.await()
             ?.let {
-
                 webView?.loadData(
                     "<head>\n" +
                             "<style type=\"text/css\">\n" +
