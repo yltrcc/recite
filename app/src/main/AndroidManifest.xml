@@ -28,6 +28,7 @@
         <activity android:name=".QuestionDetailsActivity"/>
         <activity android:name=".QuestionTestActivity"/>
         <activity android:name=".PhotoActivity"/>
+        <activity android:name=".QuestionListActivity"/>
     </application>
 
 </manifest>

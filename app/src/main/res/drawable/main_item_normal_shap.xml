@@ -10,7 +10,7 @@
     <solid android:color="@color/colorPrimary" />
 
     <padding
-        android:left="35dp"
-        android:right="35dp" />
+        android:left="10dp"
+        android:right="10dp" />
 
 </shape>
