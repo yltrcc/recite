@@ -9,45 +9,9 @@
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="match_parent"
         android:id="@+id/lv_category"
         tools:listitem="@layout/category_item"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/ll_java_random"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:background="@drawable/main_item_selector"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:src="@drawable/anim_vector_java" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:fontFamily="sans-serif-thin"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="随机来一题"
-                android:textColor="@color/color_item_normal" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-
 
 
 </LinearLayout>

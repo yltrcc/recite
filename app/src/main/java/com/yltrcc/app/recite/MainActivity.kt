@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private var PAGE_COUNT = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_COUNT
     private var CATEGORIES = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_CATEGORY
     private var count: Int = 2
-    private lateinit var data: List<QuestionCategoryEntity>
+    private lateinit var data: MutableList<QuestionCategoryEntity>
     private lateinit var ctx: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,15 +35,6 @@ class MainActivity : AppCompatActivity() {
 
         ctx = this
         initView() //初始化列表数据
-
-
-        val javaRandom: LinearLayout = findViewById(R.id.ll_java_random)
-        javaRandom.setOnClickListener {
-            val intent = Intent()
-            intent.setClass(this@MainActivity, QuestionDetailsActivity::class.java)
-            intent.putExtra("count", count)
-            startActivity(intent)
-        }
     }
 
     private fun initView() {
@@ -77,20 +68,30 @@ class MainActivity : AppCompatActivity() {
                     object : TypeToken<Response<QuestionCategoryEntity>>() {}.type
                 )
                 print(result.data)
-                data = result.data
+                val randomEntity:QuestionCategoryEntity = QuestionCategoryEntity()
+                randomEntity.categoryName = "随机来一题"
+                data = mutableListOf<QuestionCategoryEntity>()
+                data.add(randomEntity)
+                data.addAll(result.data)
                 val adapter = CategoryAdapter(ctx as Activity, R.layout.category_item, data)
                 val listview: ListView = findViewById(R.id.lv_category)
                 listview.adapter = adapter
                 listview.setOnItemClickListener { parent, view, position, id ->
-                    val entity:QuestionCategoryEntity = data[position]
-                    //Toast.makeText(ctx, "Clicked item :" + " " + position + " id: " + id + " name: " + entity.categoryName, Toast.LENGTH_SHORT).show()
-                    //# 跳转端
-                    val intent = Intent()
-                    intent.setClass(ctx, QuestionListActivity::class.java)
-                    intent.putExtra("categoryName", entity.categoryName)
-                    intent.putExtra("categoryId", entity.categoryId)
-                    ctx.startActivity(intent)
-
+                    if (position == 0) {
+                        val intent = Intent()
+                        intent.setClass(this@MainActivity, QuestionDetailsActivity::class.java)
+                        intent.putExtra("count", count)
+                        startActivity(intent)
+                    }else {
+                        val entity:QuestionCategoryEntity = data[position]
+                        //Toast.makeText(ctx, "Clicked item :" + " " + position + " id: " + id + " name: " + entity.categoryName, Toast.LENGTH_SHORT).show()
+                        //# 跳转端
+                        val intent = Intent()
+                        intent.setClass(ctx, QuestionListActivity::class.java)
+                        intent.putExtra("categoryName", entity.categoryName)
+                        intent.putExtra("categoryId", entity.categoryId)
+                        ctx.startActivity(intent)
+                    }
                 }
                 progressDialog.dismiss();//去掉加载框
             }
