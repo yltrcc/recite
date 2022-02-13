@@ -21,36 +21,27 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
-class MainActivity : AppCompatActivity() {
+class SecondCategoryActivity : AppCompatActivity() {
 
     private var PAGE_COUNT = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_COUNT
     private var CATEGORIES = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_CATEGORY
     private var count: Int = 2
     private lateinit var data: MutableList<QuestionCategoryEntity>
     private lateinit var ctx: Context
+    private var categoryId:Long = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_second_category)
 
         ctx = this
+        //接收分类Id
+        categoryId = intent.getLongExtra("categoryId", 0)
         initView() //初始化列表数据
     }
 
     private fun initView() {
-        getCount()
         getCategory()
-    }
-
-    //HTTP GET
-    fun getCount() = GlobalScope.launch(Dispatchers.Main) {
-        val http = HttpUtil()
-        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET1(PAGE_COUNT) }.await()
-            ?.let {
-                print(it)
-                count = it.toInt()
-            }
     }
 
     //HTTP GET
@@ -60,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         val http = HttpUtil()
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET1(CATEGORIES + "?isTop=true") }.await()
+        async(Dispatchers.Default) { http.httpGET1(CATEGORIES + "?categoryId=" + categoryId) }.await()
             ?.let {
                 print(it)
                 val result = Gson().fromJson<Response<QuestionCategoryEntity>>(
@@ -74,12 +65,12 @@ class MainActivity : AppCompatActivity() {
                 data.add(randomEntity)
                 data.addAll(result.data)
                 val adapter = CategoryAdapter(ctx as Activity, R.layout.category_item, data)
-                val listview: ListView = findViewById(R.id.lv_category)
+                val listview: ListView = findViewById(R.id.second_lv_category)
                 listview.adapter = adapter
                 listview.setOnItemClickListener { parent, view, position, id ->
                     if (position == 0) {
                         val intent = Intent()
-                        intent.setClass(this@MainActivity, QuestionDetailsActivity::class.java)
+                        intent.setClass(this@SecondCategoryActivity, QuestionDetailsActivity::class.java)
                         intent.putExtra("count", count)
                         startActivity(intent)
                     }else {
@@ -100,7 +91,6 @@ class MainActivity : AppCompatActivity() {
                             intent.putExtra("categoryId", entity.categoryId)
                             ctx.startActivity(intent)
                         }
-
                     }
                 }
                 progressDialog.dismiss();//去掉加载框

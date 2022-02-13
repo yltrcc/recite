@@ -29,6 +29,7 @@
         <activity android:name=".QuestionTestActivity"/>
         <activity android:name=".PhotoActivity"/>
         <activity android:name=".QuestionListActivity"/>
+        <activity android:name=".SecondCategoryActivity"/>
     </application>
 
 </manifest>

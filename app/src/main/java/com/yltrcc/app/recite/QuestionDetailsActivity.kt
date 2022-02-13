@@ -51,7 +51,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
         //接收内容
         var content = intent.getStringExtra("content")
         //接收分类Id
-        categoryId = intent.getLongExtra("count", 0)
+        categoryId = intent.getLongExtra("categoryId", 0)
 
 
         val nextOne: Button = findViewById(R.id.btn_next_one)
