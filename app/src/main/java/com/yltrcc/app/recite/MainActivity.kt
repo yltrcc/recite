@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.widget.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -38,8 +40,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        updateApp()
         getCount()
         getCategory()
+    }
+
+    private fun updateApp() = GlobalScope.launch(Dispatchers.Main) {
+        //判断当前版本信息，更新APP
+        val manager: PackageManager = ctx.packageManager
+        val info: PackageInfo = manager.getPackageInfo(ctx.packageName, 0)
+        var code: Long= info.longVersionCode
+
+        /*val http = HttpUtil()
+        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
+        async(Dispatchers.Default) { http.httpGET1(PAGE_COUNT) }.await()
+            ?.let {
+                print(it)
+                count = it.toInt()
+            }*/
     }
 
     //HTTP GET
