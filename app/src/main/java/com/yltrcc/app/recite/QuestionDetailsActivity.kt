@@ -2,6 +2,7 @@ package com.yltrcc.app.recite
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -50,6 +51,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
         count = intent.getIntExtra("count", 2)
         //接收内容
         var content = intent.getStringExtra("content")
+        var title = intent.getStringExtra("title")
         //接收分类Id
         categoryId = intent.getLongExtra("categoryId", 0)
 
@@ -83,7 +85,13 @@ class QuestionDetailsActivity : AppCompatActivity() {
             //初始化 webview后模拟点击
             nextOne.performClick()
         }else {
+            //将数据保存到sp中
+            val sharedPreferences: SharedPreferences = getSharedPreferences("questionDetails", MODE_PRIVATE)
 
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            editor.putString("content", content)
+            editor.putString("title", title)
+            editor.apply()
             webView?.loadData(
                 "<head>\n" +
                         "<style type=\"text/css\">\n" +

@@ -66,6 +66,7 @@ class QuestionListActivity : AppCompatActivity() {
                     val intent = Intent()
                     intent.setClass(ctx, QuestionDetailsActivity::class.java)
                     intent.putExtra("content", entity.articleContent)
+                    intent.putExtra("title", entity.articleTitle)
                     intent.putExtra("categoryId", categoryId)
                     ctx.startActivity(intent)
                 }
