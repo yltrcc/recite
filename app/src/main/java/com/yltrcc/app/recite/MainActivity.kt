@@ -37,8 +37,14 @@ class MainActivity : AppCompatActivity() {
         val clickHistory:TextView = findViewById(R.id.main_tv_click_history)
         val btnCategory:Button = findViewById(R.id.main_btn_category)
 
-        if (content != null) {
-            val text:String = "您最近一次点击了：" + (title?.slice(0..17) ?: String) + "..."
+        if (content != null && title != null) {
+            val text:String
+            if (title.length < 17) {
+                text = "最近浏览：" + title
+            }else {
+                text = "最近浏览：" + (title?.slice(0..17) ?: String) + "..."
+            }
+
             clickHistory.setText(text)
         }
         clickHistory.setOnClickListener(object : View.OnClickListener {
