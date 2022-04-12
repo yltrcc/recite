@@ -49,6 +49,7 @@ class CategoryActivity : AppCompatActivity() {
             fun onClick(view: View) {
                 //跳转到具体的面试题详情页面
                 val intent = Intent()
+                overridePendingTransition(0, 0)
                 intent.setClass(ctx, MainActivity::class.java)
                 ctx.startActivity(intent)
             }
@@ -133,5 +134,11 @@ class CategoryActivity : AppCompatActivity() {
                 }
                 progressDialog.dismiss();//去掉加载框
             }
+    }
+
+    @Override
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(0, 0)
     }
 }

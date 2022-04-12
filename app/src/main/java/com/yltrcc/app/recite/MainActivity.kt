@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         if (content != null && title != null) {
             val text:String
-            if (title.length < 17) {
+            if (title.length <= 17) {
                 text = "最近浏览：" + title
             }else {
                 text = "最近浏览：" + (title?.slice(0..17) ?: String) + "..."
@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
             fun onClick(view: View) {
                 //跳转到具体的面试题详情页面
                 val intent = Intent()
+                overridePendingTransition(0,0)
                 intent.setClass(ctx, CategoryActivity::class.java)
                 ctx.startActivity(intent)
             }
@@ -71,6 +72,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
 
+    }
+
+    @Override
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(0, 0)
     }
 
 
