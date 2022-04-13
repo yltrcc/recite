@@ -79,7 +79,7 @@ class SecondCategoryActivity : AppCompatActivity() {
                         if (entity.isFinal == 1) {
                             //# 跳转端
                             val intent = Intent()
-                            intent.setClass(ctx, QuestionListActivity::class.java)
+                            intent.setClass(ctx, ListActivity::class.java)
                             intent.putExtra("categoryName", entity.categoryName)
                             intent.putExtra("categoryId", entity.categoryId)
                             ctx.startActivity(intent)

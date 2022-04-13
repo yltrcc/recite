@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
 
         val clickHistory:TextView = findViewById(R.id.main_tv_click_history)
         val btnCategory:Button = findViewById(R.id.main_btn_category)
-
         if (content != null && title != null) {
             val text:String
             if (title.length <= 17) {
