@@ -28,7 +28,6 @@
         <activity android:name=".QuestionDetailsActivity"/>
         <activity android:name=".ListActivity"/>
         <activity android:name=".PhotoActivity"/>
-        <activity android:name=".QuestionListActivity"/>
         <activity android:name=".SecondCategoryActivity"/>
         <activity android:name=".CategoryActivity"/>
     </application>

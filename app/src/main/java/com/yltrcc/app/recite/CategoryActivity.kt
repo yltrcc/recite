@@ -52,6 +52,7 @@ class CategoryActivity : AppCompatActivity() {
                 overridePendingTransition(0, 0)
                 intent.setClass(ctx, MainActivity::class.java)
                 ctx.startActivity(intent)
+                finish()
             }
         })
     }
