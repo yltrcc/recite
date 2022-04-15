@@ -39,17 +39,17 @@ public class ClassifyMoreAdapter extends BaseAdapter {
 	public View getView(int arg0, View view, ViewGroup viewGroup) {
 
 		if (view == null) {
-			view = View.inflate(context, R.layout.item_classify_morelist, null);
+			view = View.inflate(context, R.layout.item_classify, null);
 			hold = new Holder(view);
 			view.setTag(hold);
 		} else {
 			hold = (Holder) view.getTag();
 		}
 		hold.txt.setText(text_list.get(arg0).getArticleTitle());
-		hold.txt.setTextColor(0xFF666666);
-		if (arg0 == position) {
+		//hold.txt.setTextColor(0xFF666666);
+		/*if (arg0 == position) {
 			hold.txt.setTextColor(0xFFFF8C00);
-		}
+		}*/
 		return view;
 	}
 
@@ -61,7 +61,7 @@ public class ClassifyMoreAdapter extends BaseAdapter {
 		TextView txt;
 
 		public Holder(View view) {
-			txt = (TextView) view.findViewById(R.id.moreitem_txt);
+			txt = (TextView) view.findViewById(R.id.item_classify_tv_content);
 		}
 	}
 }
