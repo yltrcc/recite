@@ -54,7 +54,7 @@
 
 
         <Button
-            android:id="@+id/category_btn_homepage"
+            android:id="@+id/algorithm_btn_homepage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -65,27 +65,27 @@
             android:textColor="@color/black" />
 
         <Button
-            android:id="@+id/category_btn_category"
+            android:id="@+id/algorithm_btn_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/material_on_surface_stroke"
             android:text="分类"
             android:textSize="18sp"
-            android:textColor="@color/red" />
+            android:textColor="@color/black" />
 
         <Button
-            android:id="@+id/category_btn_algorithm"
+            android:id="@+id/algorithm_btn_algorithm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="18sp"
             android:background="@color/material_on_surface_stroke"
             android:text="算法"
-            android:textColor="@color/black" />
+            android:textColor="@color/red" />
 
         <Button
-            android:id="@+id/category_btn_me"
+            android:id="@+id/algorithm_btn_me"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"

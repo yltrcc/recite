@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.yltrcc.app.recite.R;
 import com.yltrcc.app.recite.entity.QuestionListEntity;
 
-public class ClassifyMainAdapter extends BaseAdapter {
+public class SubCategoryMainAdapter extends BaseAdapter {
 
 	private Context context;
 	private List<QuestionListEntity> list;
@@ -23,13 +23,13 @@ public class ClassifyMainAdapter extends BaseAdapter {
 	private boolean islodingimg = false;
 	Holder hold;
 
-	public ClassifyMainAdapter(Context context, List<QuestionListEntity> list) {
+	public SubCategoryMainAdapter(Context context, List<QuestionListEntity> list) {
 		this.context = context;
 		this.list = list;
 	}
 
-	public ClassifyMainAdapter(Context context, List<QuestionListEntity> list,
-			boolean islodingimg) {
+	public SubCategoryMainAdapter(Context context, List<QuestionListEntity> list,
+								  boolean islodingimg) {
 		this.context = context;
 		this.list = list;
 		this.islodingimg = islodingimg;

@@ -1,13 +1,13 @@
-package com.yltrcc.app.recite
+package com.yltrcc.app.recite.views
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.yltrcc.app.recite.R
 import com.yltrcc.app.recite.entity.QuestionCategoryEntity
 import com.yltrcc.app.recite.utils.ConstantUtils
 
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         val clickHistory:TextView = findViewById(R.id.main_tv_click_history)
         val btnCategory:Button = findViewById(R.id.main_btn_category)
+        val btnAlgorithm:Button = findViewById(R.id.main_btn_algorithm)
         if (content != null && title != null) {
             val text:String
             if (title.length <= 17) {
@@ -64,6 +65,17 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent()
                 overridePendingTransition(0,0)
                 intent.setClass(ctx, CategoryActivity::class.java)
+                ctx.startActivity(intent)
+                finish()
+            }
+        })
+        btnAlgorithm.setOnClickListener(object :View.OnClickListener {
+            override
+            fun onClick(view: View) {
+                //跳转到具体的算法分类页面
+                val intent = Intent()
+                overridePendingTransition(0,0)
+                intent.setClass(ctx, AlgorithmActivity::class.java)
                 ctx.startActivity(intent)
                 finish()
             }

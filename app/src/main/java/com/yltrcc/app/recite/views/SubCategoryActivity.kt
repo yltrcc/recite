@@ -1,4 +1,4 @@
-package com.yltrcc.app.recite
+package com.yltrcc.app.recite.views
 
 import android.app.AlertDialog
 import android.app.ProgressDialog
@@ -11,8 +11,9 @@ import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.yltrcc.app.recite.adapter.ClassifyMainAdapter
-import com.yltrcc.app.recite.adapter.ClassifyMoreAdapter
+import com.yltrcc.app.recite.R
+import com.yltrcc.app.recite.adapter.SubCategoryMainAdapter
+import com.yltrcc.app.recite.adapter.SubCategoryMoreAdapter
 import com.yltrcc.app.recite.entity.QuestionEntity
 import com.yltrcc.app.recite.entity.QuestionListEntity
 import com.yltrcc.app.recite.entity.Response
@@ -23,14 +24,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class ListActivity : AppCompatActivity() {
+class SubCategoryActivity : AppCompatActivity() {
 
     private var queryUrl = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERY_BY_CATEGORY_ID
     private lateinit var data: List<QuestionListEntity>
     private lateinit var ctx: Context
     private var categoryId:Long = 0
-    var mainAdapter: ClassifyMainAdapter? = null
-    var moreAdapter: ClassifyMoreAdapter? = null
+    var mainAdapter: SubCategoryMainAdapter? = null
+    var moreAdapter: SubCategoryMoreAdapter? = null
     private var mainlist: ListView? = null
     private var morelist: ListView? = null
 
@@ -39,7 +40,7 @@ class ListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_classify)
+        setContentView(R.layout.activity_sub_category)
 
         //接收 intent
         val categoryName = intent.getStringExtra("categoryName")
@@ -85,7 +86,10 @@ class ListActivity : AppCompatActivity() {
     private fun initView() {
         mainlist = findViewById<View>(R.id.classify_mainlist) as ListView
         morelist = findViewById<View>(R.id.classify_morelist) as ListView
-        mainAdapter = ClassifyMainAdapter(this@ListActivity, data)
+        mainAdapter = SubCategoryMainAdapter(
+            this@SubCategoryActivity,
+            data
+        )
         mainAdapter!!.setSelectItem(0)
         mainlist!!.setAdapter(mainAdapter)
         mainlist!!.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
@@ -114,7 +118,8 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun initAdapter(lists: List<QuestionEntity>) {
-        moreAdapter = ClassifyMoreAdapter(this, lists)
+        moreAdapter =
+            SubCategoryMoreAdapter(this, lists)
         morelist?.setAdapter(moreAdapter)
         moreAdapter!!.notifyDataSetChanged()
     }

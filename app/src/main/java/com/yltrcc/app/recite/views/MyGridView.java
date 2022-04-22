@@ -1,4 +1,4 @@
-package com.yltrcc.app.recite;
+package com.yltrcc.app.recite.views;
 
 import android.widget.GridView;
 

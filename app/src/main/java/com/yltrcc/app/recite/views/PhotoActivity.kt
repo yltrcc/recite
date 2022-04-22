@@ -1,10 +1,10 @@
-package com.yltrcc.app.recite
+package com.yltrcc.app.recite.views
 
 import android.os.Bundle
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
+import com.yltrcc.app.recite.R
 
 class PhotoActivity : AppCompatActivity() {
 

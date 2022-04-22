@@ -1,15 +1,15 @@
-package com.yltrcc.app.recite
+package com.yltrcc.app.recite.views
 
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.content.Intent
 import android.widget.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.yltrcc.app.recite.R
 import com.yltrcc.app.recite.adapter.CategoryAdapter
 import com.yltrcc.app.recite.entity.QuestionCategoryEntity
 import com.yltrcc.app.recite.entity.Response
@@ -79,7 +79,7 @@ class SecondCategoryActivity : AppCompatActivity() {
                         if (entity.isFinal == 1) {
                             //# 跳转端
                             val intent = Intent()
-                            intent.setClass(ctx, ListActivity::class.java)
+                            intent.setClass(ctx, SubCategoryActivity::class.java)
                             intent.putExtra("categoryName", entity.categoryName)
                             intent.putExtra("categoryId", entity.categoryId)
                             ctx.startActivity(intent)

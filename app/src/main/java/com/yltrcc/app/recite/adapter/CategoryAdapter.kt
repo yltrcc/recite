@@ -15,7 +15,6 @@ class CategoryAdapter(activity: Activity, val resourceId: Int, data: List<Questi
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = LayoutInflater.from(context).inflate(resourceId, parent, false)
-        val itemImage: ImageView = view.findViewById(R.id.iv_image)
         val itemContent: TextView = view.findViewById(R.id.tv_content)
         val category = getItem(position)//获取当前项得Fruit实例
         if (category != null) {

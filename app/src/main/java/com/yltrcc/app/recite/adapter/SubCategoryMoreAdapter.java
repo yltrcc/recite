@@ -12,14 +12,14 @@ import com.yltrcc.app.recite.entity.QuestionEntity;
 
 import java.util.List;
 
-public class ClassifyMoreAdapter extends BaseAdapter {
+public class SubCategoryMoreAdapter extends BaseAdapter {
 
 	private Context context;
 	private List<QuestionEntity> text_list;
 	private int position = 0;
 	Holder hold;
 
-	public ClassifyMoreAdapter(Context context, List<QuestionEntity> text_list) {
+	public SubCategoryMoreAdapter(Context context, List<QuestionEntity> text_list) {
 		this.context = context;
 		this.text_list = text_list;
 	}
@@ -39,7 +39,7 @@ public class ClassifyMoreAdapter extends BaseAdapter {
 	public View getView(int arg0, View view, ViewGroup viewGroup) {
 
 		if (view == null) {
-			view = View.inflate(context, R.layout.item_classify, null);
+			view = View.inflate(context, R.layout.item_sub_category_more, null);
 			hold = new Holder(view);
 			view.setTag(hold);
 		} else {

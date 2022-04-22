@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yltrcc.app.recite.MyGridView;
+import com.yltrcc.app.recite.views.MyGridView;
 import com.yltrcc.app.recite.R;
 
 

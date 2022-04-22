@@ -17,7 +17,7 @@
         android:theme="@style/Theme.Recite">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".views.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,11 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".QuestionDetailsActivity"/>
-        <activity android:name=".ListActivity"/>
-        <activity android:name=".PhotoActivity"/>
-        <activity android:name=".SecondCategoryActivity"/>
-        <activity android:name=".CategoryActivity"/>
+        <activity android:name=".views.QuestionDetailsActivity"/>
+        <activity android:name=".views.SubCategoryActivity"/>
+        <activity android:name=".views.PhotoActivity"/>
+        <activity android:name=".views.SecondCategoryActivity"/>
+        <activity android:name=".views.CategoryActivity"/>
+        <activity android:name=".views.AlgorithmActivity"/>
     </application>
 
 </manifest>

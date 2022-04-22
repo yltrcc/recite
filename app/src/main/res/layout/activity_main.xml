@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="200"
-    tools:context=".MainActivity">
+    tools:context=".views.MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -60,13 +60,13 @@
             android:textColor="@color/black" />
 
         <Button
-            android:id="@+id/main_btn_random"
+            android:id="@+id/main_btn_algorithm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="18sp"
             android:background="@color/material_on_surface_stroke"
-            android:text="随机"
+            android:text="算法"
             android:textColor="@color/black" />
 
         <Button

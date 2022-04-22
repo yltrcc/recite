@@ -1,4 +1,4 @@
-package com.yltrcc.app.recite
+package com.yltrcc.app.recite.views
 
 import android.content.Context
 import android.content.Intent
@@ -14,13 +14,13 @@ import android.view.WindowManager
 import android.webkit.*
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.yltrcc.app.recite.R
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.HttpUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
 import java.util.*
 
 

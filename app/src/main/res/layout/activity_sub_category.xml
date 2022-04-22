@@ -31,11 +31,11 @@
             android:background="#fff"
             android:cacheColorHint="#00000000"
             android:divider="#ffebebeb"
-            android:dividerHeight="0.5px"
+            android:dividerHeight="0.5dp"
             android:fastScrollEnabled="true"
             android:listSelector="#00000000"
             android:scrollbars="none"
-            tools:listitem="@layout/item_classify"/>
+            tools:listitem="@layout/item_sub_category_more"/>
     </LinearLayout>
 
 </LinearLayout>
