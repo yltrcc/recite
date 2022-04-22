@@ -83,7 +83,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-
+        //判断是否需要更新APP
+        //获取apk的版本号 currentVersionCode
+        val packageInfo = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
+        var localVersionName = packageInfo.versionName
+        var localVersionCode = packageInfo.longVersionCode
+        println("sgsdgsdf")
     }
 
     @Override
