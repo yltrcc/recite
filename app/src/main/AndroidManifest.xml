@@ -27,6 +27,7 @@
         </activity>
         <activity android:name=".views.QuestionDetailsActivity"/>
         <activity android:name=".views.SubCategoryActivity"/>
+        <activity android:name=".views.SubV2CategoryActivity"/>
         <activity android:name=".views.PhotoActivity"/>
         <activity android:name=".views.SecondCategoryActivity"/>
         <activity android:name=".views.CategoryActivity"/>

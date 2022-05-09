@@ -1,7 +1,10 @@
 package com.yltrcc.app.recite.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
+@Parcelize
 data class QuestionEntity(
     val id: Long,
     val userId: Long,
@@ -19,4 +22,4 @@ data class QuestionEntity(
     val articleUrl: String,
     val articleViews: Long,
     val categoryId: Long
-)
+): Parcelable
