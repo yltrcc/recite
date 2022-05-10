@@ -28,7 +28,6 @@ class SplashActivity : AppCompatActivity() {
 
     private var queryUrlAll =
         ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3_BY_CATEGORY_ID
-    private var updateReq = "https://gitee.com/yltrcc/recite/raw/master/apk/1.txt"
     private lateinit var ctx: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +88,7 @@ class SplashActivity : AppCompatActivity() {
         val http = HttpUtil()
 
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(updateReq, 30L) }.await()
+        async(Dispatchers.Default) { http.httpGET2(ConstantUtils.UPDATE_VERIFY_URL, 30L) }.await()
             ?.let {
                 //表示数据不一致 需要更新
                 val sharedPreferences: SharedPreferences =

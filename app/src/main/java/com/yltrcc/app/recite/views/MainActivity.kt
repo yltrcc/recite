@@ -15,7 +15,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.yltrcc.app.recite.R
-import com.yltrcc.app.recite.entity.QuestionCategoryEntity
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.DownloadUtil
 import java.io.File
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var ctx: Context
     private lateinit var file:File
-    val downloadUrl = "https://gitee.com/api/v5/repos/yltrcc/recite/contents/apk/app-debug.apk"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,7 +150,7 @@ class MainActivity : AppCompatActivity() {
         val versionCode: Int = sharedPreferences.getInt("data", -1)
         val packageInfo = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
         val localVersionCode = packageInfo.longVersionCode
-        if (versionCode != -1 && versionCode > localVersionCode) {
+        /*if (versionCode != -1 && versionCode > localVersionCode) {
             //表示此时需要更新APP
             val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
             builder.setTitle("升级提示").setMessage("检测到有新版本，请升级")
@@ -160,7 +159,7 @@ class MainActivity : AppCompatActivity() {
                         //后台请求保存更新文件
                         doDownload()
                     }).show()
-        }
+        }*/
 
     }
 
@@ -189,7 +188,7 @@ class MainActivity : AppCompatActivity() {
             file.delete()
         }
         try {
-            DownloadUtil.get().download(downloadUrl, filePath, object : DownloadUtil.OnDownloadListener{
+            DownloadUtil.get().download(ConstantUtils.UPDATE_URL, filePath, object : DownloadUtil.OnDownloadListener{
                 override fun onDownloadSuccess() {
                     //成功
                     Log.d(TAG, "doDownload download success");
