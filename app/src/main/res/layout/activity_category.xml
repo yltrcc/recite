@@ -13,35 +13,52 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="199"
-        android:orientation="vertical">
-        <GridView
-            android:id="@+id/gv_category"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:horizontalSpacing="10dp"
-            android:numColumns="auto_fit"
-            android:padding="10dp"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="10dp"
-            tools:listitem="@layout/category_item"/>
-        <ListView
-            android:id="@+id/lv_category"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/category_item" />
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
-       <!-- <View
+        <ListView
+            android:id="@+id/ca_main3list"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_above="@+id/ll_navigation"
-            android:background="@color/black" />-->
+            android:layout_height="match_parent"
+            android:layout_weight="11"
+            android:background="#fff"
+            android:dividerHeight="1px"
+            android:scrollbars="none"
+            tools:ignore="NestedWeights" />
+
+        <ListView
+            android:id="@+id/ca_main2list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="11"
+            android:background="#fff"
+            android:dividerHeight="1px"
+            android:scrollbars="none" />
+        <ListView
+            android:id="@+id/ca_mainlist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="11"
+            android:background="#fff"
+            android:dividerHeight="1px"
+            android:scrollbars="none" />
+
+
+        <ListView
+            android:id="@+id/ca_morelist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:background="#fff"
+            android:dividerHeight="0.5dp"
+            android:fastScrollEnabled="true"
+            android:scrollbars="none"
+            tools:listitem="@layout/item_sub_category_more"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_above="@+id/ll_navigation"
         android:background="@color/black" />
     <LinearLayout
         android:id="@+id/ll_navigation"
@@ -82,7 +99,8 @@
             android:textSize="18sp"
             android:background="@color/material_on_surface_stroke"
             android:text="算法"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            style="?android:attr/buttonBarButtonStyle" />
 
         <Button
             android:id="@+id/category_btn_me"
