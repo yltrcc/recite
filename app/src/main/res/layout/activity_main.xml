@@ -25,6 +25,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ceshi "/>
+        <Button
+            android:id="@+id/main_btn_ceshi2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="130dp"
+            android:layout_alignParentRight="true"
+            android:text="ceshi 2"/>
+        <Button
+            android:id="@+id/main_btn_ceshi3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="ceshi 3"/>
 
 
     </RelativeLayout>

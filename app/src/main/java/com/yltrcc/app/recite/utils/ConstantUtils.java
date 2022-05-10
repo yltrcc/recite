@@ -13,4 +13,5 @@ public class ConstantUtils {
     public static final String QUESTION_QUERY_BY_CATEGORY_ID = "/question/queryArticleCategoryByCategoryId";
     public static final String QUESTION_QUERYV2_BY_CATEGORY_ID = "/question/queryCategoryV2ByCategoryId";
     public static final String QUESTION_QUERYALLV2_BY_CATEGORY_ID = "/question/queryAllCategoryV2ByCategoryId";
+    public static final String QUESTION_QUERYALLV3_BY_CATEGORY_ID = "/question/queryAllCategoryV3ByCategoryId";
 }

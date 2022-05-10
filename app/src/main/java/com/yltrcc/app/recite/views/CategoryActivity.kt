@@ -49,7 +49,7 @@ class CategoryActivity : AppCompatActivity() {
         btnHomepage.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
-                //跳转到具体的面试题详情页面
+                //跳转到具体的首页页面
                 val intent = Intent()
                 overridePendingTransition(0, 0)
                 intent.setClass(ctx, MainActivity::class.java)

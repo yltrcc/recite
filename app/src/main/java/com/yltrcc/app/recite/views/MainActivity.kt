@@ -94,6 +94,32 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         })
+        //测试
+        val ceshi2:Button = findViewById(R.id.main_btn_ceshi2)
+        ceshi2.setOnClickListener(object :View.OnClickListener {
+            override
+            fun onClick(view: View) {
+                //跳转到具体的算法分类页面
+                val intent = Intent()
+                overridePendingTransition(0,0)
+                intent.setClass(ctx, SubV3CategoryActivity::class.java)
+                ctx.startActivity(intent)
+                finish()
+            }
+        })
+        //测试
+        val ceshi3:Button = findViewById(R.id.main_btn_ceshi3)
+        ceshi3.setOnClickListener(object :View.OnClickListener {
+            override
+            fun onClick(view: View) {
+                //跳转到具体的算法分类页面
+                val intent = Intent()
+                overridePendingTransition(0,0)
+                intent.setClass(ctx, MarkdownActivity::class.java)
+                ctx.startActivity(intent)
+                finish()
+            }
+        })
     }
 
     private fun init() {

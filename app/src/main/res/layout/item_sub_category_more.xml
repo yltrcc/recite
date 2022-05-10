@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="60dp"
     android:gravity="center_vertical">
 
     <LinearLayout
@@ -15,12 +15,12 @@
         <TextView
             android:id="@+id/item_classify_tv_content"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="53dp"
             android:fontFamily="sans-serif-thin"
             android:gravity="center"
             android:layout_gravity="center_horizontal"
             android:ellipsize="end"
-            android:lines="1"
+            android:text="sgfdhfd圣诞季vdjsibfdjhbfdshs9bhjofdsjboidfsjhnoiutwetjjkwegj"
             android:textColor="@color/color_item_normal" />
     </LinearLayout>
 

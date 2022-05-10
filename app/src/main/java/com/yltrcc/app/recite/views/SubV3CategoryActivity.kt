@@ -16,57 +16,55 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.yltrcc.app.recite.R
 import com.yltrcc.app.recite.adapter.CategoryMainAdapter
+import com.yltrcc.app.recite.adapter.CategoryV3MainAdapter
 import com.yltrcc.app.recite.adapter.SubCategoryMainAdapter
 import com.yltrcc.app.recite.adapter.SubCategoryMoreAdapter
-import com.yltrcc.app.recite.entity.QuestionEntity
-import com.yltrcc.app.recite.entity.QuestionListEntity
-import com.yltrcc.app.recite.entity.QuestionV2ListEntity
-import com.yltrcc.app.recite.entity.Response
+import com.yltrcc.app.recite.entity.*
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.HttpUtil
 import kotlinx.coroutines.*
 
-class SubV2CategoryActivity : AppCompatActivity() {
+class SubV3CategoryActivity : AppCompatActivity() {
 
-    private var queryUrl = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYV2_BY_CATEGORY_ID
     private var queryUrlAll =
-        ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV2_BY_CATEGORY_ID
-    private lateinit var data: List<QuestionV2ListEntity>
+        ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3_BY_CATEGORY_ID
+    private lateinit var data: List<QuestionV3ListEntity>
     private lateinit var ctx: Context
     private var categoryId: Long = 0
     var mainAdapter: SubCategoryMainAdapter? = null
     var mainV2Adapter: CategoryMainAdapter? = null
+    var mainV3Adapter: CategoryV3MainAdapter? = null
     var moreAdapter: SubCategoryMoreAdapter? = null
     private var mainlist: ListView? = null
     private var mainV2list: ListView? = null
+    private var mainV3list: ListView? = null
     private var morelist: ListView? = null
     private var content: String = ""
     private var contentStr: String = ""
 
     //记录第一栏点击位置
-    private var firPosition: Int = 0
+    private var headPosition: Int = 0
 
     //记录第二栏点击位置
-    private var position: Int = 0
+    private var firPosition: Int = 0
+
+    //记录第三栏点击位置
+    private var secPosition: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sub_v2_category)
+        setContentView(R.layout.activity_sub_v3_category)
 
-        //接收 intent
-        val categoryName = intent.getStringExtra("categoryName")
-        categoryId = intent.getLongExtra("categoryId", 9)
-        queryUrl = queryUrl + "?categoryId=" + categoryId
         ctx = this
         //判断本地是否有内存
         //如果sp有数据
         val sharedPreferences: SharedPreferences =
-            getSharedPreferences("SubV2CategoryActivity", MODE_PRIVATE)
+            getSharedPreferences("SubV3CategoryActivity", MODE_PRIVATE)
         content = sharedPreferences.getString("content", "").toString();
         contentStr = sharedPreferences.getString("contentStr", "").toString();
         if (content.length > 0) {
             val gson = Gson()
-            data = gson.fromJson(content, Array<QuestionV2ListEntity>::class.java).toList()
+            data = gson.fromJson(content, Array<QuestionV3ListEntity>::class.java).toList()
             initView()
             //更新sp
             job()
@@ -81,17 +79,18 @@ class SubV2CategoryActivity : AppCompatActivity() {
     //异步起一个线程去更新content
     fun job() = GlobalScope.launch(Dispatchers.Main) {
         val http = HttpUtil()
+        println("更新数据！！")
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
         async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 30L) }.await()
             ?.let {
                 if (!contentStr.equals(it)) {
-                    val result = Gson().fromJson<Response<QuestionV2ListEntity>>(
+                    val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
                         it,
-                        object : TypeToken<Response<QuestionV2ListEntity>>() {}.type
+                        object : TypeToken<Response<QuestionV3ListEntity>>() {}.type
                     )
                     //表示数据不一致 需要更新
                     val sharedPreferences: SharedPreferences =
-                        getSharedPreferences("SubV2CategoryActivity", MODE_PRIVATE)
+                        getSharedPreferences("SubV3CategoryActivity", MODE_PRIVATE)
                     val editor: SharedPreferences.Editor = sharedPreferences.edit()
                     editor.putString("content", Gson().toJson(result.data))
                     editor.putString("contentStr", it)
@@ -103,19 +102,19 @@ class SubV2CategoryActivity : AppCompatActivity() {
     //HTTP GET
     fun queryByCateogry() = GlobalScope.launch(Dispatchers.Main) {
 
-        val progressDialog: ProgressDialog = ProgressDialog.show(ctx, "请稍等...", "获取数据中...", true)
+        val progressDialog: ProgressDialog = ProgressDialog.show(ctx, "请稍等...", "大数据量，正获取数据中...", true)
 
         val http = HttpUtil()
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET1(queryUrl) }.await()
+        async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 30L) }.await()
             ?.let {
-                val result = Gson().fromJson<Response<QuestionV2ListEntity>>(
+                val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
                     it,
-                    object : TypeToken<Response<QuestionV2ListEntity>>() {}.type
+                    object : TypeToken<Response<QuestionV3ListEntity>>() {}.type
                 )
                 data = result.data
                 val sharedPreferences: SharedPreferences =
-                    getSharedPreferences("SubV2CategoryActivity", MODE_PRIVATE)
+                    getSharedPreferences("SubV3CategoryActivity", MODE_PRIVATE)
                 val editor: SharedPreferences.Editor = sharedPreferences.edit()
                 editor.putString("content", Gson().toJson(data))
                 editor.apply()
@@ -135,63 +134,103 @@ class SubV2CategoryActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        mainlist = findViewById<View>(R.id.v2_mainlist) as ListView
-        mainV2list = findViewById<View>(R.id.v2_main2list) as ListView
-        morelist = findViewById<View>(R.id.v2_morelist) as ListView
+        mainlist = findViewById<View>(R.id.v3_mainlist) as ListView
+        mainV2list = findViewById<View>(R.id.v3_main2list) as ListView
+        mainV3list = findViewById<View>(R.id.v3_main3list) as ListView
+        morelist = findViewById<View>(R.id.v3_morelist) as ListView
+
+        mainV3Adapter = CategoryV3MainAdapter(
+            this@SubV3CategoryActivity,
+            data
+        )
+        mainV3Adapter!!.setSelectItem(0)
+        mainV3list!!.setAdapter(mainV3Adapter)
+        mainV3list!!.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
+            initV3Adapter(data.get(position).data)
+            mainV3Adapter!!.setSelectItem(position)
+            mainV3Adapter!!.notifyDataSetChanged()
+            this.headPosition = position
+            this.firPosition = 0
+            this.secPosition = 0
+        })
+        mainV3list!!.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
+
+
 
         mainV2Adapter = CategoryMainAdapter(
-            this@SubV2CategoryActivity,
-            data
+            this@SubV3CategoryActivity,
+            data[0].data
         )
         mainV2Adapter!!.setSelectItem(0)
         mainV2list!!.setAdapter(mainV2Adapter)
         mainV2list!!.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
-            initV2Adapter(data.get(position).data)
+            initV2Adapter(data.get(headPosition).data.get(position).data)
             mainV2Adapter!!.setSelectItem(position)
             mainV2Adapter!!.notifyDataSetChanged()
             this.firPosition = position
+            this.secPosition = 0
         })
         mainV2list!!.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
 
         mainAdapter = SubCategoryMainAdapter(
-            this@SubV2CategoryActivity,
-            data[0].data
+            this@SubV3CategoryActivity,
+            data[0].data[0].data
         )
         mainAdapter!!.setSelectItem(0)
         mainlist!!.setAdapter(mainAdapter)
         mainlist!!.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
-            initAdapter(data[firPosition].data.get(position).data)
+            initAdapter(data.get(headPosition).data.get(firPosition).data.get(position).data)
             mainAdapter!!.setSelectItem(position)
             mainAdapter!!.notifyDataSetChanged()
-            this.position = position
+            this.secPosition = position
         })
         mainlist!!.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
 
 
         // 一定要设置这个属性，否则ListView不会刷新
-        initV2Adapter(data.get(0).data)
-        initAdapter(data[0].data.get(0).data)
+        initV3Adapter(data[0].data)
         morelist!!.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
             moreAdapter?.setSelectItem(position)
             moreAdapter?.notifyDataSetChanged()
-            println("点击了第 " + position + "个位置")
-            val entity: QuestionListEntity = data[firPosition].data.get(this.position)
+            println("点击了第 " + headPosition + "," + firPosition + "," + secPosition + "," + position + "个位置")
+            val entity: QuestionListEntity = data.get(headPosition).data.get(firPosition).data.get(secPosition)
             //Toast.makeText(ctx, "Clicked item :" + " " + position + " id: " + id + " name: " + entity.articleTitle, Toast.LENGTH_SHORT).show()
             //# 跳转端
             val intent = Intent()
-            intent.setClass(ctx, QuestionDetailsActivity::class.java)
-            intent.putExtra("content", entity.data.get(position).articleContent)
-            intent.putExtra("title", entity.data.get(position).articleTitle)
-            intent.putExtra("categoryId", categoryId)
+            intent.setClass(ctx, MarkdownActivity::class.java)
+            intent.putExtra("content", entity.data.get(position).articleContentMd)
             ctx.startActivity(intent)
         })
+    }
+
+    private fun initV3Adapter(lists: List<QuestionV2ListEntity>) {
+
+        mainV2Adapter = CategoryMainAdapter(
+            this@SubV3CategoryActivity,
+            lists
+        )
+        mainV2list?.setAdapter(mainV2Adapter)
+        mainV2Adapter!!.notifyDataSetChanged()
+
+
+        mainAdapter = SubCategoryMainAdapter(
+            this@SubV3CategoryActivity,
+            lists[0].data
+        )
+        mainlist?.setAdapter(mainAdapter)
+        mainAdapter!!.notifyDataSetChanged()
+
+        moreAdapter =
+            SubCategoryMoreAdapter(this, lists[0].data[0].data)
+        morelist?.setAdapter(moreAdapter)
+        moreAdapter!!.notifyDataSetChanged()
     }
 
 
     private fun initV2Adapter(lists: List<QuestionListEntity>) {
 
         mainAdapter = SubCategoryMainAdapter(
-            this@SubV2CategoryActivity,
+            this@SubV3CategoryActivity,
             lists
         )
         mainlist?.setAdapter(mainAdapter)
