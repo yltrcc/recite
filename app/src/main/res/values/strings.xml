@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">recite</string>
+    <string name="splash_img_str">这是一张图片</string>
 </resources>

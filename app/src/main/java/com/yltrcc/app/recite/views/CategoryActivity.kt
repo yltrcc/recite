@@ -63,37 +63,9 @@ class CategoryActivity : AppCompatActivity() {
             val gson = Gson()
             data = gson.fromJson(content, Array<QuestionV3ListEntity>::class.java).toList()
             initView()
-            //更新sp
-            job()
         } else {
             queryByCateogry()
         }
-    }
-    /**
-     * 异步去请求请求数据然后更新到 sp
-     */
-    //异步起一个线程去更新content
-    fun job() = GlobalScope.launch(Dispatchers.Main) {
-        val http = HttpUtil()
-        println("更新数据！！")
-
-        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 30L) }.await()
-            ?.let {
-                if (!contentStr.equals(it)) {
-                    val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
-                        it,
-                        object : TypeToken<Response<QuestionV3ListEntity>>() {}.type
-                    )
-                    //表示数据不一致 需要更新
-                    val sharedPreferences: SharedPreferences =
-                        getSharedPreferences("CategoryActivity", MODE_PRIVATE)
-                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                    editor.putString("content", Gson().toJson(result.data))
-                    editor.putString("contentStr", it)
-                    editor.apply()
-                }
-            }
     }
 
     //HTTP GET
