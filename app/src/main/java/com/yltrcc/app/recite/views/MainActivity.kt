@@ -23,10 +23,6 @@ import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
-    private var PAGE_COUNT = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_COUNT
-    private var CATEGORIES = ConstantUtils.BASE_API + ConstantUtils.QUESTION_GET_CATEGORY
-    private var count: Int = 2
-    private lateinit var data: MutableList<QuestionCategoryEntity>
     private lateinit var ctx: Context
     private lateinit var file:File
     val downloadUrl = "https://gitee.com/api/v5/repos/yltrcc/recite/contents/apk/app-debug.apk"
