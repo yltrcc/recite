@@ -40,7 +40,7 @@
         <activity android:name=".views.AlgorithmActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="com.yltrcc.app.recite.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

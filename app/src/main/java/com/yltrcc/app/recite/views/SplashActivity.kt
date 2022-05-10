@@ -28,7 +28,7 @@ class SplashActivity : AppCompatActivity() {
 
     private var queryUrlAll =
         ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3_BY_CATEGORY_ID
-    private var updateReq = "https://gitee.com/api/v5/repos/yltrcc/recite/contents/%2Fapk%2F1.txt"
+    private var updateReq = "https://gitee.com/yltrcc/recite/raw/master/apk/1.txt"
     private lateinit var ctx: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {

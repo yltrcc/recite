@@ -222,7 +222,8 @@ class MainActivity : AppCompatActivity() {
         val data: Uri
 
         //7.0以上安卓系统安装app需要通过fileProvider（需要在AndroidManifest.xml声明）
-        data = FileProvider.getUriForFile(this, "com.example.testupgrade.provider", file)
+        //注意包名要和 AndroidManifest.xml 中的 android:authorities="com.yltrcc.app.recite.fileProvider" 一致
+        data = FileProvider.getUriForFile(this, "com.yltrcc.app.recite.fileProvider", file)
         // 给目标应用一个临时授权
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         //安装完成后打开新版本
