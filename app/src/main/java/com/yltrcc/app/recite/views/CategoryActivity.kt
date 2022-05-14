@@ -28,7 +28,7 @@ class CategoryActivity : AppCompatActivity() {
     private var queryAllCategory = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3
     private var queryQuestion = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUESTION_BY_SUB
     private lateinit var data: List<QuestionV3ListEntity>
-    private lateinit var questionData: List<QuestionEntity>
+    private lateinit var questionData: MutableList<QuestionEntity>
     var mainAdapter: SubCategoryMainAdapter? = null
     var mainV2Adapter: CategoryMainAdapter? = null
     var mainV3Adapter: CategoryV3MainAdapter? = null
@@ -126,11 +126,9 @@ class CategoryActivity : AppCompatActivity() {
                     it,
                     object : TypeToken<Response<QuestionListEntity>>() {}.type
                 )
-                questionData = result.data[0].data
-                if (data.size > 0) {
-                    if (questionData.size > 0) {
-                        initAdapter(questionData)
-                    }
+                questionData = result.data[0].data.toMutableList()
+                if (questionData.size > 0) {
+                    initAdapter(questionData)
                     mainAdapter!!.setSelectItem(position)
                     mainAdapter!!.notifyDataSetChanged()
                     secPosition = position
@@ -138,7 +136,7 @@ class CategoryActivity : AppCompatActivity() {
                     val builder = AlertDialog.Builder(ctx)
                     builder.setTitle("尊敬的用户")
                     builder.setMessage("暂无后台数据，请联系管理员添加")
-                    builder.setPositiveButton("确定") { dialog, which -> finish() }
+                    builder.setPositiveButton("确定") { dialog, which -> questionData.clear()}
 
                     val alert = builder.create()
                     alert.show()
@@ -162,12 +160,13 @@ class CategoryActivity : AppCompatActivity() {
         mainV3Adapter!!.setSelectItem(0)
         mainV3list!!.setAdapter(mainV3Adapter)
         mainV3list!!.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, id ->
-            initV3Adapter(data.get(position).data)
-            mainV3Adapter!!.setSelectItem(position)
-            mainV3Adapter!!.notifyDataSetChanged()
             this.headPosition = position
             this.firPosition = 0
             this.secPosition = 0
+            initV3Adapter(data.get(position).data)
+            mainV3Adapter!!.setSelectItem(position)
+            mainV3Adapter!!.notifyDataSetChanged()
+
         })
         mainV3list!!.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
 
@@ -180,11 +179,12 @@ class CategoryActivity : AppCompatActivity() {
         mainV2Adapter!!.setSelectItem(0)
         mainV2list!!.setAdapter(mainV2Adapter)
         mainV2list!!.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, id ->
+            this.firPosition = position
+            this.secPosition = 0
             initV2Adapter(data.get(headPosition).data.get(position).data)
             mainV2Adapter!!.setSelectItem(position)
             mainV2Adapter!!.notifyDataSetChanged()
-            this.firPosition = position
-            this.secPosition = 0
+
         })
         mainV2list!!.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
 
