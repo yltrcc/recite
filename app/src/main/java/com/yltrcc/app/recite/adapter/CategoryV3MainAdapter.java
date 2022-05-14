@@ -49,13 +49,12 @@ public class CategoryV3MainAdapter extends BaseAdapter {
 	public View getView(int arg0, View view, ViewGroup viewGroup) {
 
 		if (view == null) {
-			view = View.inflate(context, R.layout.item_classify_mainlist, null);
+			view = View.inflate(context, R.layout.item_classify2_mainlist, null);
 			hold = new Holder(view);
 			view.setTag(hold);
 		} else {
 			hold = (Holder) view.getTag();
 		}
-		hold.img.setVisibility(View.GONE);
 		hold.txt.setText(list.get(arg0).getCategoryName());
 		hold.layout.setBackgroundColor(0xFFEBEBEB);
 		if (arg0 == position) {
@@ -79,8 +78,7 @@ public class CategoryV3MainAdapter extends BaseAdapter {
 
 		public Holder(View view) {
 			txt = (TextView) view.findViewById(R.id.mainitem_txt);
-			img = (ImageView) view.findViewById(R.id.mainitem_img);
-			layout = (LinearLayout) view.findViewById(R.id.mainitem_layout);
+			layout = (LinearLayout) view.findViewById(R.id.mainitem2_layout);
 		}
 	}
 }
