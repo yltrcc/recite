@@ -48,12 +48,14 @@ public class MarkdownWebView extends WebView {
             this.setBackgroundColor(Color.TRANSPARENT);
 
             // be careful, we do not need internet access
-            this.getSettings().setBlockNetworkLoads(true);
+            this.getSettings().setBlockNetworkLoads(false);
 
             //
             this.getSettings().setLoadWithOverviewMode(true);
             this.getSettings().setJavaScriptEnabled(true);
-//            this.getSettings().setUseWideViewPort(true);
+            //this.getSettings().setLoadsImagesAutomatically(true);
+            //开启调试
+            WebView.setWebContentsDebuggingEnabled(true);
         }
 
         if (false) {
@@ -129,7 +131,7 @@ public class MarkdownWebView extends WebView {
             escapeText = "";
         }
 
-        String javascriptCommand = "javascript:setText(\'" + escapeText + "\')";
+        String javascriptCommand = "javascript:setText('" + escapeText + "')";
         this.loadUrl(javascriptCommand);
     }
 
