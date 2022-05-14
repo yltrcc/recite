@@ -57,7 +57,7 @@ public class SubCategoryMainAdapter extends BaseAdapter {
 			hold = (Holder) view.getTag();
 		}
 		hold.img.setVisibility(View.GONE);
-		hold.txt.setText(list.get(arg0).getCategoryName());
+		hold.txt.setText(list.get(arg0).getSubCategoryName());
 		hold.layout.setBackgroundColor(0xFFEBEBEB);
 		if (arg0 == position) {
 			hold.layout.setBackgroundColor(0xFFFFFFFF);

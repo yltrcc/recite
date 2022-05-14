@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 class SplashActivity : AppCompatActivity() {
 
     private var queryUrlAll =
-        ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3_BY_CATEGORY_ID
+        ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3
     private lateinit var ctx: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,7 +115,7 @@ class SplashActivity : AppCompatActivity() {
                     it,
                     object : TypeToken<Response<QuestionV3ListEntity>>() {}.type
                 )
-                //表示数据不一致 需要更新
+                //
                 val sharedPreferences: SharedPreferences =
                     getSharedPreferences("CategoryActivity", MODE_PRIVATE)
                 val editor: SharedPreferences.Editor = sharedPreferences.edit()

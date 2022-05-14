@@ -28,7 +28,10 @@ class SubV3CategoryActivity : AppCompatActivity() {
 
     private var queryUrlAll =
         ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3_BY_CATEGORY_ID
+    private var queryAllCategory = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3
+    private var queryQuestion = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUESTION_BY_SUB
     private lateinit var data: List<QuestionV3ListEntity>
+    private lateinit var questionData: List<QuestionEntity>
     private lateinit var ctx: Context
     private var categoryId: Long = 0
     var mainAdapter: SubCategoryMainAdapter? = null
@@ -66,47 +69,20 @@ class SubV3CategoryActivity : AppCompatActivity() {
             val gson = Gson()
             data = gson.fromJson(content, Array<QuestionV3ListEntity>::class.java).toList()
             initView()
-            //更新sp
-            job()
         } else {
-            queryByCateogry()
+            queryByCategory()
         }
     }
 
-    /**
-     * 异步去请求请求数据然后更新到 sp
-     */
-    //异步起一个线程去更新content
-    fun job() = GlobalScope.launch(Dispatchers.Main) {
-        val http = HttpUtil()
-        println("更新数据！！")
-        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 30L) }.await()
-            ?.let {
-                if (!contentStr.equals(it)) {
-                    val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
-                        it,
-                        object : TypeToken<Response<QuestionV3ListEntity>>() {}.type
-                    )
-                    //表示数据不一致 需要更新
-                    val sharedPreferences: SharedPreferences =
-                        getSharedPreferences("SubV3CategoryActivity", MODE_PRIVATE)
-                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                    editor.putString("content", Gson().toJson(result.data))
-                    editor.putString("contentStr", it)
-                    editor.apply()
-                }
-            }
-    }
-
     //HTTP GET
-    fun queryByCateogry() = GlobalScope.launch(Dispatchers.Main) {
+    fun queryByCategory() = GlobalScope.launch(Dispatchers.Main) {
 
-        val progressDialog: ProgressDialog = ProgressDialog.show(ctx, "请稍等...", "大数据量，正获取数据中...", true)
+        val progressDialog: ProgressDialog =
+            ProgressDialog.show(ctx, "请稍等...", "大数据量，正获取数据中...", true)
 
         val http = HttpUtil()
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 30L) }.await()
+        async(Dispatchers.Default) { http.httpGET2(queryAllCategory, 30L) }.await()
             ?.let {
                 val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
                     it,
@@ -117,6 +93,7 @@ class SubV3CategoryActivity : AppCompatActivity() {
                     getSharedPreferences("SubV3CategoryActivity", MODE_PRIVATE)
                 val editor: SharedPreferences.Editor = sharedPreferences.edit()
                 editor.putString("content", Gson().toJson(data))
+                editor.putString("contentStr", it)
                 editor.apply()
                 if (data.size > 0) {
                     initView()
@@ -132,6 +109,49 @@ class SubV3CategoryActivity : AppCompatActivity() {
                 progressDialog.dismiss();//去掉加载框
             }
     }
+
+
+    /**
+     * 通过子分类 拉取 面试题
+     */
+    fun queryBySubCategory(subCategoryId: Int, position:Int) = GlobalScope.launch(Dispatchers.Main) {
+
+        val progressDialog: ProgressDialog = ProgressDialog.show(ctx, "请稍等...", "获取数据中...", true)
+
+        val http = HttpUtil()
+        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
+        async(Dispatchers.Default) {
+            http.httpGET2(
+                queryQuestion + "?subCategoryId=" + subCategoryId,
+                30L
+            )
+        }.await()
+            ?.let {
+                val result = Gson().fromJson<Response<QuestionListEntity>>(
+                    it,
+                    object : TypeToken<Response<QuestionListEntity>>() {}.type
+                )
+                questionData = result.data[0].data
+                if (data.size > 0) {
+                    if (questionData.size > 0) {
+                        initAdapter(questionData)
+                    }
+                    mainAdapter!!.setSelectItem(position)
+                    mainAdapter!!.notifyDataSetChanged()
+                    secPosition = position
+                }else {
+                    val builder = AlertDialog.Builder(ctx)
+                    builder.setTitle("尊敬的用户")
+                    builder.setMessage("暂无后台数据，请联系管理员添加")
+                    builder.setPositiveButton("确定") { dialog, which -> finish() }
+
+                    val alert = builder.create()
+                    alert.show()
+                }
+                progressDialog.dismiss();//去掉加载框
+            }
+    }
+
 
     private fun initView() {
         mainlist = findViewById<View>(R.id.v3_mainlist) as ListView
@@ -179,10 +199,8 @@ class SubV3CategoryActivity : AppCompatActivity() {
         mainAdapter!!.setSelectItem(0)
         mainlist!!.setAdapter(mainAdapter)
         mainlist!!.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
-            initAdapter(data.get(headPosition).data.get(firPosition).data.get(position).data)
-            mainAdapter!!.setSelectItem(position)
-            mainAdapter!!.notifyDataSetChanged()
-            this.secPosition = position
+            queryBySubCategory(data.get(headPosition).data.get(firPosition).data.get(position).subCategoryId, position)
+
         })
         mainlist!!.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
 
@@ -193,12 +211,10 @@ class SubV3CategoryActivity : AppCompatActivity() {
             moreAdapter?.setSelectItem(position)
             moreAdapter?.notifyDataSetChanged()
             println("点击了第 " + headPosition + "," + firPosition + "," + secPosition + "," + position + "个位置")
-            val entity: QuestionListEntity = data.get(headPosition).data.get(firPosition).data.get(secPosition)
-            //Toast.makeText(ctx, "Clicked item :" + " " + position + " id: " + id + " name: " + entity.articleTitle, Toast.LENGTH_SHORT).show()
             //# 跳转端
             val intent = Intent()
             intent.setClass(ctx, MarkdownActivity::class.java)
-            intent.putExtra("content", entity.data.get(position).articleContentMd)
+            intent.putExtra("content", questionData.get(position).articleContentMd)
             ctx.startActivity(intent)
         })
     }
@@ -220,10 +236,10 @@ class SubV3CategoryActivity : AppCompatActivity() {
         mainlist?.setAdapter(mainAdapter)
         mainAdapter!!.notifyDataSetChanged()
 
-        moreAdapter =
+/*        moreAdapter =
             SubCategoryMoreAdapter(this, lists[0].data[0].data)
         morelist?.setAdapter(moreAdapter)
-        moreAdapter!!.notifyDataSetChanged()
+        moreAdapter!!.notifyDataSetChanged()*/
     }
 
 
@@ -236,10 +252,10 @@ class SubV3CategoryActivity : AppCompatActivity() {
         mainlist?.setAdapter(mainAdapter)
         mainAdapter!!.notifyDataSetChanged()
 
-        moreAdapter =
-            SubCategoryMoreAdapter(this, lists.get(0).data)
-        morelist?.setAdapter(moreAdapter)
-        moreAdapter!!.notifyDataSetChanged()
+//        moreAdapter =
+//            SubCategoryMoreAdapter(this, lists.get(0).data)
+//        morelist?.setAdapter(moreAdapter)
+//        moreAdapter!!.notifyDataSetChanged()
     }
 
     private fun initAdapter(lists: List<QuestionEntity>) {

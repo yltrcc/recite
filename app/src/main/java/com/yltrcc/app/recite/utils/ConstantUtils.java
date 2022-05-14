@@ -16,6 +16,8 @@ public class ConstantUtils {
     public static final String QUESTION_QUERYV2_BY_CATEGORY_ID = "/question/queryCategoryV2ByCategoryId";
     public static final String QUESTION_QUERYALLV2_BY_CATEGORY_ID = "/question/queryAllCategoryV2ByCategoryId";
     public static final String QUESTION_QUERYALLV3_BY_CATEGORY_ID = "/question/queryAllCategoryV3ByCategoryId";
+    public static final String QUESTION_QUERYALLV3 = "/question/queryAllCategoryV3";
+    public static final String QUESTION_QUESTION_BY_SUB = "/question/queryQuestionBySubCategoryId";
 
     //版本更新相关API
     public static final String UPDATE_VERIFY_URL = "https://gitee.com/yltrcc/recite/raw/master/apk/1.txt";
