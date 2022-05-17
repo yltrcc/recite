@@ -23,6 +23,7 @@ import com.yltrcc.app.recite.entity.*
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.HttpUtil
 import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
 
 class SubV3CategoryActivity : AppCompatActivity() {
 
@@ -82,7 +83,7 @@ class SubV3CategoryActivity : AppCompatActivity() {
 
         val http = HttpUtil()
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(queryAllCategory, 30L) }.await()
+        async(Dispatchers.Default) { http.httpGET2(queryAllCategory, 30000L, TimeUnit.MILLISECONDS) }.await()
             ?.let {
                 val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
                     it,
@@ -123,7 +124,7 @@ class SubV3CategoryActivity : AppCompatActivity() {
         async(Dispatchers.Default) {
             http.httpGET2(
                 queryQuestion + "?subCategoryId=" + subCategoryId,
-                30L
+                30000L, TimeUnit.MILLISECONDS
             )
         }.await()
             ?.let {

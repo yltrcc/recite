@@ -25,6 +25,7 @@ import com.yltrcc.app.recite.entity.Response
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.HttpUtil
 import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
 
 class SubV2CategoryActivity : AppCompatActivity() {
 
@@ -82,7 +83,7 @@ class SubV2CategoryActivity : AppCompatActivity() {
     fun job() = GlobalScope.launch(Dispatchers.Main) {
         val http = HttpUtil()
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 30L) }.await()
+        async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 30000L, TimeUnit.MILLISECONDS) }.await()
             ?.let {
                 if (!contentStr.equals(it)) {
                     val result = Gson().fromJson<Response<QuestionV2ListEntity>>(

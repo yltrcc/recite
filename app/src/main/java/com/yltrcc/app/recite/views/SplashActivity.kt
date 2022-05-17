@@ -18,6 +18,7 @@ import com.yltrcc.app.recite.entity.Response
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.HttpUtil
 import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
 
 
 class SplashActivity : AppCompatActivity() {
@@ -86,7 +87,7 @@ class SplashActivity : AppCompatActivity() {
         val http = HttpUtil()
 
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(ConstantUtils.UPDATE_VERIFY_URL, 30L) }.await()
+        async(Dispatchers.Default) { http.httpGET2(ConstantUtils.UPDATE_VERIFY_URL, 3000L, TimeUnit.MILLISECONDS) }.await()
             ?.let {
                 //表示数据不一致 需要更新
                 val sharedPreferences: SharedPreferences =
@@ -108,7 +109,7 @@ class SplashActivity : AppCompatActivity() {
         supervisorScope {
             try {
                 //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-                async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 30L) }.await()
+                async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 3000L, TimeUnit.MILLISECONDS) }.await()
                     ?.let {
                         val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
                             it,

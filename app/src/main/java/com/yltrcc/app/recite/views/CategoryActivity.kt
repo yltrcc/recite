@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.content.Intent
 import android.content.SharedPreferences
+import android.util.Log
 import android.widget.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -16,14 +17,14 @@ import com.yltrcc.app.recite.adapter.*
 import com.yltrcc.app.recite.entity.*
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.HttpUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.lang.Exception
+import java.util.concurrent.TimeUnit
 
 
 class CategoryActivity : AppCompatActivity() {
 
+    private val TAG = CategoryActivity::class.java.simpleName
     private lateinit var ctx: Context
     private var queryAllCategory = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3
     private var queryQuestion = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUESTION_BY_SUB
@@ -39,6 +40,7 @@ class CategoryActivity : AppCompatActivity() {
     private var morelist: ListView? = null
     private var content: String = ""
     private var contentStr: String = ""
+    private lateinit var sharedPreferences: SharedPreferences
 
     //记录第一栏点击位置
     private var headPosition: Int = 0
@@ -56,8 +58,7 @@ class CategoryActivity : AppCompatActivity() {
         ctx = this
         //判断本地是否有内存
         //如果sp有数据
-        val sharedPreferences: SharedPreferences =
-            getSharedPreferences("CategoryActivity", MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("CategoryActivity", MODE_PRIVATE)
         content = sharedPreferences.getString("content", "").toString();
         contentStr = sharedPreferences.getString("contentStr", "").toString();
         if (content.length > 0) {
@@ -77,15 +78,19 @@ class CategoryActivity : AppCompatActivity() {
 
         val http = HttpUtil()
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(queryAllCategory, 30L) }.await()
+        async(Dispatchers.Default) {
+            http.httpGET2(
+                queryAllCategory,
+                2000L,
+                TimeUnit.MILLISECONDS
+            )
+        }.await()
             ?.let {
                 val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
                     it,
                     object : TypeToken<Response<QuestionV3ListEntity>>() {}.type
                 )
                 data = result.data
-                val sharedPreferences: SharedPreferences =
-                    getSharedPreferences("CategoryActivity", MODE_PRIVATE)
                 val editor: SharedPreferences.Editor = sharedPreferences.edit()
                 editor.putString("content", Gson().toJson(data))
                 editor.putString("contentStr", it)
@@ -109,41 +114,77 @@ class CategoryActivity : AppCompatActivity() {
     /**
      * 通过子分类 拉取 面试题
      */
-    fun queryBySubCategory(subCategoryId: Int, position:Int) = GlobalScope.launch(Dispatchers.Main) {
+    fun queryBySubCategory(subCategoryId: Int, headPosition: Int, firPosition: Int, position: Int) =
+        GlobalScope.launch(Dispatchers.Main) {
 
-        val progressDialog: ProgressDialog = ProgressDialog.show(ctx, "请稍等...", "获取数据中...", true)
+            val progressDialog: ProgressDialog =
+                ProgressDialog.show(ctx, "请稍等...", "获取数据中...", true)
 
-        val http = HttpUtil()
-        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) {
-            http.httpGET2(
-                queryQuestion + "?subCategoryId=" + subCategoryId,
-                30L
-            )
-        }.await()
-            ?.let {
-                val result = Gson().fromJson<Response<QuestionListEntity>>(
-                    it,
-                    object : TypeToken<Response<QuestionListEntity>>() {}.type
-                )
-                questionData = result.data[0].data.toMutableList()
-                if (questionData.size > 0) {
-                    initAdapter(questionData)
-                    mainAdapter!!.setSelectItem(position)
-                    mainAdapter!!.notifyDataSetChanged()
-                    secPosition = position
-                }else {
-                    val builder = AlertDialog.Builder(ctx)
-                    builder.setTitle("尊敬的用户")
-                    builder.setMessage("暂无后台数据，请联系管理员添加")
-                    builder.setPositiveButton("确定") { dialog, which -> questionData.clear()}
+            val http = HttpUtil()
+            supervisorScope {
+                try {
+                    //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
+                    async(Dispatchers.Default) {
+                        http.httpGET2(
+                            queryQuestion + "?subCategoryId=" + subCategoryId,
+                            200L, TimeUnit.MILLISECONDS
+                        )
+                    }.await()
+                        ?.let {
+                            val result = Gson().fromJson<Response<QuestionListEntity>>(
+                                it,
+                                object : TypeToken<Response<QuestionListEntity>>() {}.type
+                            )
+                            questionData = result.data[0].data.toMutableList()
+                            if (questionData.size > 0) {
+                                initAdapter(questionData)
+                                mainAdapter!!.setSelectItem(position)
+                                mainAdapter!!.notifyDataSetChanged()
+                                secPosition = position
+                                //刷新本地缓存
+                                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                                editor.putString(""+headPosition+firPosition+position, it)
+                                editor.apply()
+                            } else {
+                                val builder = AlertDialog.Builder(ctx)
+                                builder.setTitle("尊敬的用户")
+                                builder.setMessage("暂无后台数据，请联系管理员添加")
+                                builder.setPositiveButton("确定") { dialog, which -> questionData.clear() }
 
-                    val alert = builder.create()
-                    alert.show()
+                                val alert = builder.create()
+                                alert.show()
+                            }
+                            progressDialog.dismiss();//去掉加载框
+                        }
+                } catch (ex: Exception) {
+                    Log.e(TAG, ex.toString())
+                    //尝试本地加载
+                    val string =
+                        sharedPreferences.getString("" + headPosition + firPosition + position, "")
+                    if (string != null && string.length > 0) {
+                        val result = Gson().fromJson<Response<QuestionListEntity>>(
+                            string,
+                            object : TypeToken<Response<QuestionListEntity>>() {}.type
+                        )
+                        questionData = result.data[0].data.toMutableList()
+                        initAdapter(questionData)
+                        mainAdapter!!.setSelectItem(position)
+                        mainAdapter!!.notifyDataSetChanged()
+                        secPosition = position
+                    }else {
+                        val builder = AlertDialog.Builder(ctx)
+                        builder.setTitle("尊敬的用户")
+                        builder.setMessage("暂无后台数据，请联系管理员添加")
+                        builder.setPositiveButton("确定") { dialog, which -> questionData.clear() }
+
+                        val alert = builder.create()
+                        alert.show()
+                    }
+                    progressDialog.dismiss();//去掉加载框
                 }
-                progressDialog.dismiss();//去掉加载框
             }
-    }
+
+        }
 
 
     private fun initView() {
@@ -197,7 +238,7 @@ class CategoryActivity : AppCompatActivity() {
         mainlist!!.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, id ->
             queryBySubCategory(
                 data.get(headPosition).data.get(firPosition).data.get(position).subCategoryId,
-                position
+                headPosition, firPosition, position
             )
 
         })
@@ -267,7 +308,7 @@ class CategoryActivity : AppCompatActivity() {
 //        moreAdapter!!.notifyDataSetChanged()
         queryBySubCategory(
             data.get(headPosition).data.get(firPosition).data.get(0).subCategoryId,
-            0
+            headPosition, firPosition, 0
         )
 
     }
@@ -288,7 +329,7 @@ class CategoryActivity : AppCompatActivity() {
 //        moreAdapter!!.notifyDataSetChanged()
         queryBySubCategory(
             data.get(headPosition).data.get(firPosition).data.get(0).subCategoryId,
-            0
+            headPosition, firPosition, 0
         )
     }
 

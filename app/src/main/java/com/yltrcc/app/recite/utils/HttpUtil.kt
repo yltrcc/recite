@@ -17,14 +17,14 @@ class HttpUtil {
         return body
     }
 
-    fun httpGET2(url: String, timeout:Long): String? {
+    fun httpGET2(url: String, timeout:Long, unit: TimeUnit): String? {
         val request = Request.Builder()
             .url(url)
             .build()
 
         val response = OkHttpClient().newBuilder()
-            .connectTimeout(timeout, TimeUnit.SECONDS)
-            .readTimeout(timeout, TimeUnit.SECONDS)
+            .connectTimeout(timeout, unit)
+            .readTimeout(timeout, unit)
             .build().newCall(request).execute()
         val body = response.body?.string()
         return body
