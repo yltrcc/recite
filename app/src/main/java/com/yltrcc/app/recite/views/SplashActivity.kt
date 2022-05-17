@@ -5,8 +5,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
-import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -17,14 +17,12 @@ import com.yltrcc.app.recite.entity.QuestionV3ListEntity
 import com.yltrcc.app.recite.entity.Response
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.HttpUtil
-import com.yltrcc.app.recite.utils.StatusBarUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 class SplashActivity : AppCompatActivity() {
+
+    private val TAG = SplashActivity::class.java.simpleName
 
     private var queryUrlAll =
         ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3
@@ -53,7 +51,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun jobAll() {
         job1()
-        job2()
+        //job2()
     }
 
     fun skip() {
@@ -107,21 +105,28 @@ class SplashActivity : AppCompatActivity() {
     //异步起一个线程去更新content
     fun job1() = GlobalScope.launch(Dispatchers.Main) {
         val http = HttpUtil()
-
-        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 30L) }.await()
-            ?.let {
-                val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
-                    it,
-                    object : TypeToken<Response<QuestionV3ListEntity>>() {}.type
-                )
-                //
-                val sharedPreferences: SharedPreferences =
-                    getSharedPreferences("CategoryActivity", MODE_PRIVATE)
-                val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                editor.putString("content", Gson().toJson(result.data))
-                editor.putString("contentStr", it)
-                editor.apply()
+        supervisorScope {
+            try {
+                //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
+                async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 30L) }.await()
+                    ?.let {
+                        val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
+                            it,
+                            object : TypeToken<Response<QuestionV3ListEntity>>() {}.type
+                        )
+                        //
+                        val sharedPreferences: SharedPreferences =
+                            getSharedPreferences("CategoryActivity", MODE_PRIVATE)
+                        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                        editor.putString("content", Gson().toJson(result.data))
+                        editor.putString("contentStr", it)
+                        editor.apply()
+                    }
+            }catch (ex:Exception) {
+                Log.e(TAG, ex.toString())
             }
+        }
+
+
     }
 }
