@@ -61,7 +61,7 @@ class SplashActivity : AppCompatActivity() {
         val t = Thread { //这个函数接口里，编写新线程需要干的事情
             // TODO Auto-generated method stub
             try {
-                Thread.sleep(3000) //睡眠3s
+                Thread.sleep(1500) //睡眠1.5s
                 val intent = Intent()
                 overridePendingTransition(0, 0)
                 intent.setClass(ctx, MainActivity::class.java)

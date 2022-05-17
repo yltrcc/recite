@@ -17,10 +17,10 @@
             android:layout_width="wrap_content"
             android:layout_height="53dp"
             android:fontFamily="sans-serif-thin"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:layout_gravity="center_horizontal"
             android:ellipsize="end"
-            android:text="sgfdhfd圣诞季vdjsibfdjhbfdshs9bhjofdsjboidfsjhnoiutwetjjkwegj"
+            android:lines="3"
             android:textColor="@color/color_item_normal" />
     </LinearLayout>
 
