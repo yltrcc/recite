@@ -58,23 +58,6 @@ public class MarkdownWebView extends WebView {
             WebView.setWebContentsDebuggingEnabled(true);
         }
 
-        if (false) {
-            // caching
-            File dir = context.getCacheDir();
-            if (!dir.exists()) {
-                Log.d(TAG, "directory does not exist");
-                boolean mkdirsStatus = dir.mkdirs();
-                if (!mkdirsStatus) {
-                    Log.e(TAG, "directory creation failed");
-                }
-            }
-
-            getSettings().setAppCachePath(dir.getPath());
-            getSettings().setAppCacheEnabled(true);
-            getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-
-        }
-
         {
             this.mWebViewLoaded = false;
             this.setWebViewClient(new WebViewClient() {
@@ -135,7 +118,7 @@ public class MarkdownWebView extends WebView {
         this.loadUrl(javascriptCommand);
     }
 
-    static final boolean open(Context context, Uri uri) {
+    static void open(Context context, Uri uri) {
         int launchFlags = Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
 
@@ -144,12 +127,10 @@ public class MarkdownWebView extends WebView {
 
         try {
             context.startActivity(intent);
-            return true;
-        } catch (Exception e) {
-
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
         }
 
-        return false;
     }
 
     static String escape(String s) {
@@ -174,6 +155,9 @@ public class MarkdownWebView extends WebView {
 
                 case '\t':
                     out.append("\\t");
+                    break;
+                case '\'':
+                    out.append("\\'");
                     break;
 
                 case '\b':
