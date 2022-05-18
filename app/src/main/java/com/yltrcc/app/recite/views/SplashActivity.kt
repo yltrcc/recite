@@ -25,8 +25,8 @@ class SplashActivity : AppCompatActivity() {
 
     private val TAG = SplashActivity::class.java.simpleName
 
-    private var queryUrlAll =
-        ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3
+    private var queryUrlAll = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUERYALLV3
+    private var queryAllAlgorithm = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUESTION_ALL_ALGORITHM
     private lateinit var ctx: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +83,7 @@ class SplashActivity : AppCompatActivity() {
      * https://gitee.com/api/v5/repos/yltrcc/recite/contents/%2Fapk%2F1.txt
      * 请求最新版本号保存到本地sp
      */
-    fun job2() = GlobalScope.launch(Dispatchers.Main) {
+    fun job() = GlobalScope.launch(Dispatchers.Main) {
         val http = HttpUtil()
 
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
@@ -118,6 +118,37 @@ class SplashActivity : AppCompatActivity() {
                         //
                         val sharedPreferences: SharedPreferences =
                             getSharedPreferences("CategoryActivity", MODE_PRIVATE)
+                        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                        editor.putString("content", Gson().toJson(result.data))
+                        editor.putString("contentStr", it)
+                        editor.apply()
+                    }
+            }catch (ex:Exception) {
+                Log.e(TAG, ex.toString())
+            }
+        }
+
+
+    }
+
+    /**
+     * 异步去请求请求数据然后更新到 sp
+     */
+    //异步起一个线程去更新content
+    fun job2() = GlobalScope.launch(Dispatchers.Main) {
+        val http = HttpUtil()
+        supervisorScope {
+            try {
+                //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
+                async(Dispatchers.Default) { http.httpGET2(queryAllAlgorithm, 3000L, TimeUnit.MILLISECONDS) }.await()
+                    ?.let {
+                        val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
+                            it,
+                            object : TypeToken<Response<QuestionV3ListEntity>>() {}.type
+                        )
+                        //
+                        val sharedPreferences: SharedPreferences =
+                            getSharedPreferences("AlgorithmActivity", MODE_PRIVATE)
                         val editor: SharedPreferences.Editor = sharedPreferences.edit()
                         editor.putString("content", Gson().toJson(result.data))
                         editor.putString("contentStr", it)

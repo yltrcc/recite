@@ -6,6 +6,7 @@ public class ConstantUtils {
     public static final String BASE_API = "https://www.ylcoder.top/api";
     //public static final String BASE_API = "http://127.0.0.1:8081/api";
 
+    //面试题
     public static final String QUESTION_GET_PAGE = "/question/getpage";
     public static final String QUESTION_GET_COUNT = "/question/getcount";
     public static final String QUESTION_GET_CATEGORY = "/question/getcategory";
@@ -16,6 +17,10 @@ public class ConstantUtils {
     public static final String QUESTION_QUERYALLV3_BY_CATEGORY_ID = "/question/queryAllCategoryV3ByCategoryId";
     public static final String QUESTION_QUERYALLV3 = "/question/queryAllCategoryV3";
     public static final String QUESTION_QUESTION_BY_SUB = "/question/queryQuestionBySubCategoryId";
+
+    //算法
+    public static final String QUESTION_QUESTION_ALL_ALGORITHM = "/question/queryAllAlgorithm";
+
 
     //版本更新相关API
     public static final String UPDATE_VERIFY_URL = "https://gitee.com/yltrcc/recite/raw/master/apk/1.txt";
