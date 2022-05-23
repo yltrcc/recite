@@ -47,12 +47,14 @@ class MainActivity : AppCompatActivity() {
 
         var text: String = ""
         if ((questionValue != null) && questionValue.isNotEmpty()) {
-            text += "" + questionValue + '\n'
+            text += "" + questionValue.split("@")[1] + '\n'
         }
         if ((algorithmValue != null) && algorithmValue.isNotEmpty()) {
-            text += "" + algorithmValue + '\n'
+            text += "" + algorithmValue.split("@")[1] + '\n'
         }
-
+        if (text.length == 0) {
+            text = "java核心知识"
+        }
         taskCategory.setText(text)
         startLearn.setOnClickListener(object : View.OnClickListener {
             override
