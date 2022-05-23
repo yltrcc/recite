@@ -9,50 +9,29 @@
     android:weightSum="200"
     tools:context=".views.MainActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="199">
-
-        <TextView
-            android:id="@+id/main_tv_click_history"
+        android:layout_weight="199"
+        android:orientation="vertical">
+        <!--        今日任务：每天一个分类-->
+        <EditText
+            android:id="@+id/main_category"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:gravity="center" />
+            android:layout_height="wrap_content"/>
         <Button
-            android:id="@+id/main_btn_ceshi"
-            android:layout_width="wrap_content"
+            android:id="@+id/main_start_learn"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ceshi "/>
-        <Button
-            android:id="@+id/main_btn_ceshi2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="130dp"
-            android:layout_alignParentRight="true"
-            android:text="ceshi 2"/>
-        <Button
-            android:id="@+id/main_btn_ceshi3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="ceshi 3"/>
-        <Button
-            android:id="@+id/main_btn_ceshi4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="189dp"
-            android:layout_alignParentRight="true"
-            android:text="ceshi 4"/>
+            android:text="开始学习" />
 
-
-    </RelativeLayout>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/black" />
+
     <LinearLayout
         android:id="@+id/ll_navigation"
         android:layout_width="match_parent"
@@ -69,10 +48,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:textSize="18sp"
             android:background="@color/material_on_surface_stroke"
             android:text="首页"
-            android:textColor="@color/red" />
+            android:textColor="@color/red"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/main_btn_category"
@@ -81,29 +60,29 @@
             android:layout_weight="1"
             android:background="@color/material_on_surface_stroke"
             android:text="面试"
-            android:textSize="18sp"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/main_btn_algorithm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="18sp"
             android:background="@color/material_on_surface_stroke"
             android:text="算法"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/main_btn_me"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:textSize="18sp"
             android:layout_weight="1"
             android:background="@color/material_on_surface_stroke"
             android:text="我"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

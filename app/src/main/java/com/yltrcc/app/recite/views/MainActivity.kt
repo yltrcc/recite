@@ -23,7 +23,7 @@ import java.io.File
 class MainActivity : AppCompatActivity() {
 
     private lateinit var ctx: Context
-    private lateinit var file:File
+    private lateinit var file: File
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,34 +34,37 @@ class MainActivity : AppCompatActivity() {
         init() //初始化列表数据
 
         //如果sp有数据
-        val sharedPreferences: SharedPreferences =
-            getSharedPreferences("questionDetails", MODE_PRIVATE)
+        val taskCategorySP: SharedPreferences =
+            getSharedPreferences("taskCategory", MODE_PRIVATE)
 
-        val content: String? = sharedPreferences.getString("content", null)
-        val title: String? = sharedPreferences.getString("title", null)
+        val questionValue: String? = taskCategorySP.getString("question", "")
+        val algorithmValue: String? = taskCategorySP.getString("algorithm", "")
 
-
-        val clickHistory: TextView = findViewById(R.id.main_tv_click_history)
         val btnCategory: Button = findViewById(R.id.main_btn_category)
         val btnAlgorithm: Button = findViewById(R.id.main_btn_algorithm)
-        if (content != null && title != null) {
-            val text: String
-            if (title.length <= 17) {
-                text = "最近浏览：" + title
-            } else {
-                text = "最近浏览：" + (title?.slice(0..17) ?: String) + "..."
-            }
+        val taskCategory: TextView = findViewById(R.id.main_category)
+        val startLearn: Button = findViewById(R.id.main_start_learn)
 
-            clickHistory.setText(text)
+        var text: String = ""
+        if ((questionValue != null) && questionValue.isNotEmpty()) {
+            text += "" + questionValue + '\n'
         }
-        clickHistory.setOnClickListener(object : View.OnClickListener {
+        if ((algorithmValue != null) && algorithmValue.isNotEmpty()) {
+            text += "" + algorithmValue + '\n'
+        }
+
+        taskCategory.setText(text)
+        startLearn.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
-                //跳转到具体的面试题详情页面
+                //跳转到具体的面试题分类 ~@~!
                 val intent = Intent()
-                intent.setClass(ctx, QuestionDetailsActivity::class.java)
-                intent.putExtra("content", content)
-                intent.putExtra("title", title)
+                intent.setClass(ctx, CategoryActivity::class.java)
+                if (questionValue == "") {
+                    intent.putExtra("index",  "0" )
+                }else {
+                    intent.putExtra("index", questionValue!!.split("@")[0] )
+                }
                 ctx.startActivity(intent)
             }
         })
@@ -88,58 +91,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        //测试
-        val ceshi: Button = findViewById(R.id.main_btn_ceshi)
-        ceshi.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的算法分类页面
-                val intent = Intent()
-                overridePendingTransition(0, 0)
-                intent.setClass(ctx, SubV2CategoryActivity::class.java)
-                ctx.startActivity(intent)
-                finish()
-            }
-        })
-        //测试
-        val ceshi2: Button = findViewById(R.id.main_btn_ceshi2)
-        ceshi2.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的算法分类页面
-                val intent = Intent()
-                overridePendingTransition(0, 0)
-                intent.setClass(ctx, SubV3CategoryActivity::class.java)
-                ctx.startActivity(intent)
-                finish()
-            }
-        })
-        //测试
-        val ceshi3: Button = findViewById(R.id.main_btn_ceshi3)
-        ceshi3.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的算法分类页面
-                val intent = Intent()
-                overridePendingTransition(0, 0)
-                intent.setClass(ctx, MarkdownActivity::class.java)
-                ctx.startActivity(intent)
-                finish()
-            }
-        })
-        //测试
-        val ceshi4: Button = findViewById(R.id.main_btn_ceshi4)
-        ceshi4.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的算法分类页面
-                val intent = Intent()
-                overridePendingTransition(0, 0)
-                intent.setClass(ctx, SplashActivity::class.java)
-                ctx.startActivity(intent)
-                finish()
-            }
-        })
     }
 
     private fun init() {
@@ -188,24 +139,27 @@ class MainActivity : AppCompatActivity() {
             file.delete()
         }
         try {
-            DownloadUtil.get().download(ConstantUtils.UPDATE_URL, filePath, object : DownloadUtil.OnDownloadListener{
-                override fun onDownloadSuccess() {
-                    //成功
-                    Log.d(TAG, "doDownload download success");
-                    installApk();
-                }
+            DownloadUtil.get().download(
+                ConstantUtils.UPDATE_URL,
+                filePath,
+                object : DownloadUtil.OnDownloadListener {
+                    override fun onDownloadSuccess() {
+                        //成功
+                        Log.d(TAG, "doDownload download success");
+                        installApk();
+                    }
 
-                override fun onDownloading(progress: Int) {
-                    //进度
-                    //Log.d(TAG, "doDownload download:" + progress +"%");
-                }
+                    override fun onDownloading(progress: Int) {
+                        //进度
+                        //Log.d(TAG, "doDownload download:" + progress +"%");
+                    }
 
-                override fun onDownloadFailed() {
-                    //失败
-                    Log.d(TAG, "doDownload download fail");
-                }
+                    override fun onDownloadFailed() {
+                        //失败
+                        Log.d(TAG, "doDownload download fail");
+                    }
 
-            })
+                })
         } catch (e: Exception) {
             Log.d(TAG, "doDownload e2:" + e.message)
         }

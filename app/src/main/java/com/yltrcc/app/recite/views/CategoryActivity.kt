@@ -246,7 +246,24 @@ class CategoryActivity : AppCompatActivity() {
 
 
         // 一定要设置这个属性，否则ListView不会刷新
-        initV3Adapter(data[0].data)
+        val index = intent.getStringExtra("index")
+        if (index != null) {
+            headPosition = index.toInt()
+            initV3Adapter(data.get(headPosition).data)
+            mainV3Adapter!!.setSelectItem(headPosition)
+            mainV3Adapter!!.notifyDataSetChanged()
+            val taskCategorySP: SharedPreferences =
+                getSharedPreferences("taskCategory", MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = taskCategorySP.edit()
+            if (headPosition + 1 < data.size) {
+                editor.putString("question", (headPosition + 1).toString() + "@" + data.get(headPosition + 1).categoryName)
+            }else {
+                editor.putString("question", "0@" + data.get(0).categoryName)
+            }
+            editor.apply()
+        }else {
+            initV3Adapter(data[0].data)
+        }
         morelist!!.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, id ->
             moreAdapter?.setSelectItem(position)
             moreAdapter?.notifyDataSetChanged()
