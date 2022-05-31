@@ -17,6 +17,7 @@ import com.yltrcc.app.recite.adapter.*
 import com.yltrcc.app.recite.entity.*
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.HttpUtil
+import com.yltrcc.app.recite.utils.StatusBarUtils
 import kotlinx.coroutines.*
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
@@ -54,7 +55,7 @@ class CategoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category)
-
+        StatusBarUtils.setStatusBar(window, R.color.colorPrimary)
         ctx = this
         //判断本地是否有内存
         //如果sp有数据
@@ -98,13 +99,7 @@ class CategoryActivity : AppCompatActivity() {
                 if (data.size > 0) {
                     initView()
                 } else {
-                    val builder = AlertDialog.Builder(ctx)
-                    builder.setTitle("尊敬的用户")
-                    builder.setMessage("暂无后台数据，请联系管理员添加")
-                    builder.setPositiveButton("确定") { dialog, which -> finish() }
-
-                    val alert = builder.create()
-                    alert.show()
+                    Toast.makeText(ctx, "暂无数据", Toast.LENGTH_SHORT).show()
                 }
                 progressDialog.dismiss();//去掉加载框
             }
@@ -146,13 +141,7 @@ class CategoryActivity : AppCompatActivity() {
                                 editor.putString(""+headPosition+firPosition+position, it)
                                 editor.apply()
                             } else {
-                                val builder = AlertDialog.Builder(ctx)
-                                builder.setTitle("尊敬的用户")
-                                builder.setMessage("暂无后台数据，请联系管理员添加")
-                                builder.setPositiveButton("确定") { dialog, which -> questionData.clear() }
-
-                                val alert = builder.create()
-                                alert.show()
+                                Toast.makeText(ctx, "暂无数据", Toast.LENGTH_SHORT).show()
                             }
                             progressDialog.dismiss();//去掉加载框
                         }
@@ -172,13 +161,7 @@ class CategoryActivity : AppCompatActivity() {
                         mainAdapter!!.notifyDataSetChanged()
                         secPosition = position
                     }else {
-                        val builder = AlertDialog.Builder(ctx)
-                        builder.setTitle("尊敬的用户")
-                        builder.setMessage("暂无后台数据，请联系管理员添加")
-                        builder.setPositiveButton("确定") { dialog, which -> questionData.clear() }
-
-                        val alert = builder.create()
-                        alert.show()
+                        Toast.makeText(ctx, "暂无数据", Toast.LENGTH_SHORT).show()
                     }
                     progressDialog.dismiss();//去掉加载框
                 }

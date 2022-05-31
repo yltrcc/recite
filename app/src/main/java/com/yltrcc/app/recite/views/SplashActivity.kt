@@ -17,6 +17,7 @@ import com.yltrcc.app.recite.entity.QuestionV3ListEntity
 import com.yltrcc.app.recite.entity.Response
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.HttpUtil
+import com.yltrcc.app.recite.utils.StatusBarUtils
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 
@@ -33,17 +34,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         ctx = this
-        // 修改状态栏字体颜色，用AndroidX官方兼容API
-        val wic: WindowInsetsControllerCompat? =
-            ViewCompat.getWindowInsetsController(getWindow().getDecorView())
-        if (wic != null) {
-            // true表示Light Mode，状态栏字体呈黑色，反之呈白色
-            wic.setAppearanceLightStatusBars(false);
-        }
-
-        // 修改状态栏背景颜色，还是通用API，这个比较简单
-        getWindow().setStatusBarColor(Color.BLACK)
-        val detailsImage: ImageView = findViewById(R.id.splash_img)
+        StatusBarUtils.setStatusBar(window, R.color.black)
 
         //异步拉取数据
         jobAll()
@@ -52,7 +43,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun jobAll() {
         job1()
-        //job2()
+        job2()
     }
 
     fun skip() {

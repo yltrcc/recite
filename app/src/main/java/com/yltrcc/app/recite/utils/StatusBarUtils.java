@@ -1,5 +1,6 @@
 package com.yltrcc.app.recite.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Build;
 import android.view.View;
@@ -7,6 +8,10 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.ColorRes;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+
+import com.yltrcc.app.recite.R;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -197,5 +202,26 @@ public class StatusBarUtils {
         }
 
         decorView.setSystemUiVisibility(originVisibility);
+    }
+
+    /**
+     * 设置状态栏文字颜色为黑色
+     *
+     * @param window         window
+     * @param statusBarColor 状态栏的颜色
+     */
+    @SuppressLint("ResourceAsColor")
+    public static void setStatusBar(Window window, @ColorRes int statusBarColor) {
+        // 修改状态栏背景颜色，还是通用API，这个比较简单
+        window.setStatusBarColor(ResUtils.getColor(window.getContext(), statusBarColor));
+
+        // 修改状态栏字体颜色，用AndroidX官方兼容API
+        WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(window.getDecorView());
+        if (windowInsetsController != null) {
+            // true表示Light Mode，状态栏字体呈黑色，反之呈白色
+            windowInsetsController.setAppearanceLightStatusBars(R.color.black == statusBarColor);
+        }
+
+
     }
 }

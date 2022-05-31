@@ -17,6 +17,7 @@ import androidx.core.content.FileProvider
 import com.yltrcc.app.recite.R
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.DownloadUtil
+import com.yltrcc.app.recite.utils.StatusBarUtils
 import java.io.File
 
 
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        StatusBarUtils.setStatusBar(window, R.color.colorPrimary)
         ctx = this
         init() //初始化列表数据
 
