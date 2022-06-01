@@ -82,8 +82,7 @@ class CategoryActivity : AppCompatActivity() {
         async(Dispatchers.Default) {
             http.httpGET2(
                 queryAllCategory,
-                2000L,
-                TimeUnit.MILLISECONDS
+                1L, TimeUnit.SECONDS
             )
         }.await()
             ?.let {
