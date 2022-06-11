@@ -1,18 +1,14 @@
-package com.yltrcc.app.recite.views
+package com.yltrcc.app.recite
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.yltrcc.app.recite.R
+import com.yltrcc.app.recite.activity.MainActivity
 import com.yltrcc.app.recite.entity.QuestionV3ListEntity
 import com.yltrcc.app.recite.entity.Response
 import com.yltrcc.app.recite.utils.ConstantUtils

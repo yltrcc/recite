@@ -1,13 +1,10 @@
-package com.yltrcc.app.recite.views
+package com.yltrcc.app.recite.activity
 
-import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -62,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             fun onClick(view: View) {
                 //跳转到具体的面试题分类 ~@~!
                 val intent = Intent()
-                intent.setClass(ctx, CategoryActivity::class.java)
+                intent.setClass(ctx, QuestionActivity::class.java)
                 if (questionValue == "") {
                     intent.putExtra("index",  "0" )
                 }else {
@@ -77,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                 //跳转到具体的面试题详情页面
                 val intent = Intent()
                 overridePendingTransition(0, 0)
-                intent.setClass(ctx, CategoryActivity::class.java)
+                intent.setClass(ctx, QuestionActivity::class.java)
                 ctx.startActivity(intent)
                 finish()
             }

@@ -1,10 +1,10 @@
-package com.yltrcc.app.recite.views
+package com.yltrcc.app.recite.activity
 
 import android.os.Bundle
-import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import com.yltrcc.app.recite.R
 import com.yltrcc.app.recite.utils.StatusBarUtils
+import com.yltrcc.app.recite.views.MarkdownWebView
 
 class MarkdownActivity : AppCompatActivity() {
 

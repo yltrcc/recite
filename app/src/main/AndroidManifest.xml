@@ -21,22 +21,18 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".views.SplashActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".views.MainActivity"/>
+        <activity android:name=".activity.MainActivity"/>
 
-        <activity android:name=".views.QuestionDetailsActivity" />
-        <activity android:name=".views.SubCategoryActivity" />
-        <activity android:name=".views.MarkdownActivity" />
-        <activity android:name=".views.PhotoActivity" />
-        <activity android:name=".views.SecondCategoryActivity" />
-        <activity android:name=".views.CategoryActivity" />
-        <activity android:name=".views.AlgorithmActivity" />
+        <activity android:name=".activity.MarkdownActivity" />
+        <activity android:name=".activity.QuestionActivity" />
+        <activity android:name=".activity.AlgorithmActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.yltrcc.app.recite.fileProvider"
