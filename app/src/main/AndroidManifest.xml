@@ -33,6 +33,7 @@
         <activity android:name=".activity.MarkdownActivity" />
         <activity android:name=".activity.QuestionActivity" />
         <activity android:name=".activity.AlgorithmActivity" />
+        <activity android:name=".activity.ArticleActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.yltrcc.app.recite.fileProvider"

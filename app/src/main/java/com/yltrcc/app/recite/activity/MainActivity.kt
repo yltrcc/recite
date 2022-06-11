@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         val btnCategory: Button = findViewById(R.id.main_btn_category)
         val btnAlgorithm: Button = findViewById(R.id.main_btn_algorithm)
+        val btnArticle: Button = findViewById(R.id.main_btn_article)
         val taskCategory: TextView = findViewById(R.id.main_category)
         val startLearn: Button = findViewById(R.id.main_start_learn)
 
@@ -90,7 +91,17 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         })
-
+        btnArticle.setOnClickListener(object : View.OnClickListener {
+            override
+            fun onClick(view: View) {
+                //跳转到具体的算法分类页面
+                val intent = Intent()
+                overridePendingTransition(0, 0)
+                intent.setClass(ctx, ArticleActivity::class.java)
+                ctx.startActivity(intent)
+                finish()
+            }
+        })
     }
 
     private fun init() {

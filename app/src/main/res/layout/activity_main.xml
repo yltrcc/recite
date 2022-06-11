@@ -74,13 +74,13 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/main_btn_me"
+            android:id="@+id/main_btn_article"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:background="@color/material_on_surface_stroke"
-            android:text="我"
+            android:text="文章"
             android:textColor="@color/black"
             android:textSize="18sp" />
 

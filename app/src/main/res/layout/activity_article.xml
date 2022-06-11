@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="200"
-    tools:context=".activity.QuestionActivity">
+    tools:context=".activity.ArticleActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
         android:baselineAligned="false">
 
         <ListView
-            android:id="@+id/ca_main3list"
+            android:id="@+id/al_main3list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="11"
@@ -27,7 +27,7 @@
             tools:ignore="NestedWeights" />
 
         <ListView
-            android:id="@+id/ca_main2list"
+            android:id="@+id/al_main2list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="11"
@@ -35,7 +35,7 @@
             android:dividerHeight="1px"
             android:scrollbars="none" />
         <ListView
-            android:id="@+id/ca_mainlist"
+            android:id="@+id/al_mainlist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="11"
@@ -45,7 +45,7 @@
 
 
         <ListView
-            android:id="@+id/ca_morelist"
+            android:id="@+id/al_morelist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="7"
@@ -59,6 +59,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
+        android:layout_above="@+id/ll_navigation"
         android:background="@color/black" />
     <LinearLayout
         android:id="@+id/ll_navigation"
@@ -71,7 +72,7 @@
 
 
         <Button
-            android:id="@+id/category_btn_homepage"
+            android:id="@+id/article_btn_homepage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -82,28 +83,27 @@
             android:textColor="@color/black" />
 
         <Button
-            android:id="@+id/category_btn_category"
+            android:id="@+id/article_btn_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/material_on_surface_stroke"
             android:text="面试"
             android:textSize="18sp"
-            android:textColor="@color/red" />
+            android:textColor="@color/black" />
 
         <Button
-            android:id="@+id/category_btn_algorithm"
+            android:id="@+id/article_btn_algorithm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="18sp"
             android:background="@color/material_on_surface_stroke"
             android:text="算法"
-            android:textColor="@color/black"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:textColor="@color/black" />
 
         <Button
-            android:id="@+id/category_btn_me"
+            android:id="@+id/article_btn_me"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
@@ -111,7 +111,7 @@
             android:layout_weight="1"
             android:background="@color/material_on_surface_stroke"
             android:text="文章"
-            android:textColor="@color/black" />
+            android:textColor="@color/red" />
 
     </LinearLayout>
 

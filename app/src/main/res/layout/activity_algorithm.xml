@@ -110,7 +110,7 @@
             android:textSize="18sp"
             android:layout_weight="1"
             android:background="@color/material_on_surface_stroke"
-            android:text="我"
+            android:text="文章"
             android:textColor="@color/black" />
 
     </LinearLayout>
