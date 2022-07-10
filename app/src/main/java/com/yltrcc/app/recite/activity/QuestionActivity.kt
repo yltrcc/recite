@@ -258,6 +258,7 @@ class QuestionActivity : AppCompatActivity() {
 
         val btnHomepage: Button = findViewById(R.id.category_btn_homepage)
         val btnAlgorithm: Button = findViewById(R.id.category_btn_algorithm)
+        val btnArticle: Button = findViewById(R.id.category_btn_article)
         btnHomepage.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
@@ -277,6 +278,17 @@ class QuestionActivity : AppCompatActivity() {
                 val intent = Intent()
                 overridePendingTransition(0, 0)
                 intent.setClass(ctx, AlgorithmActivity::class.java)
+                ctx.startActivity(intent)
+                finish()
+            }
+        })
+        btnArticle.setOnClickListener(object : View.OnClickListener {
+            override
+            fun onClick(view: View) {
+                //跳转到具体的算法分类页面
+                val intent = Intent()
+                overridePendingTransition(0, 0)
+                intent.setClass(ctx, ArticleActivity::class.java)
                 ctx.startActivity(intent)
                 finish()
             }
