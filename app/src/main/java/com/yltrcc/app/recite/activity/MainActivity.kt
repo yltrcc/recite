@@ -1,5 +1,7 @@
 package com.yltrcc.app.recite.activity
 
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
@@ -11,11 +13,21 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.yltrcc.app.recite.R
+import com.yltrcc.app.recite.entity.QuestionV3ListEntity
+import com.yltrcc.app.recite.entity.Response
 import com.yltrcc.app.recite.utils.ConstantUtils
 import com.yltrcc.app.recite.utils.DownloadUtil
+import com.yltrcc.app.recite.utils.HttpUtil
 import com.yltrcc.app.recite.utils.StatusBarUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         val btnArticle: Button = findViewById(R.id.main_btn_article)
         val taskCategory: TextView = findViewById(R.id.main_category)
         val startLearn: Button = findViewById(R.id.main_start_learn)
+        val randomArticle: Button = findViewById(R.id.main_random_article)
 
         var text: String = ""
         if ((questionValue != null) && questionValue.isNotEmpty()) {
@@ -67,6 +80,12 @@ class MainActivity : AppCompatActivity() {
                     intent.putExtra("index", questionValue!!.split("@")[0] )
                 }
                 ctx.startActivity(intent)
+            }
+        })
+        randomArticle.setOnClickListener(object : View.OnClickListener {
+            override
+            fun onClick(view: View) {
+                getRandomArticle()
             }
         })
         btnCategory.setOnClickListener(object : View.OnClickListener {
@@ -123,6 +142,30 @@ class MainActivity : AppCompatActivity() {
                     }).show()
         }*/
 
+    }
+
+    //HTTP GET
+    fun getRandomArticle() = GlobalScope.launch(Dispatchers.Main) {
+
+        val progressDialog: ProgressDialog =
+            ProgressDialog.show(ctx, "请稍等...", "正生成内容中...", true)
+
+        val http = HttpUtil()
+        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
+        async(Dispatchers.Default) {
+            http.httpGET2(
+                ConstantUtils.RANDOM_ARTICLE,
+                1L, TimeUnit.SECONDS
+            )
+        }.await()
+            ?.let {
+
+                progressDialog.dismiss();//去掉加载框 val intent = Intent()
+                val intent = Intent()
+                intent.setClass(ctx, MarkdownActivity::class.java)
+                intent.putExtra("content", it)
+                ctx.startActivity(intent)
+            }
     }
 
     @Override
