@@ -253,6 +253,8 @@ class QuestionActivity : AppCompatActivity() {
             val intent = Intent()
             intent.setClass(ctx, MarkdownActivity::class.java)
             intent.putExtra("content", questionData.get(position).articleContentMd)
+            intent.putExtra("subCategoryId", data.get(headPosition).data.get(firPosition).data.get(secPosition).subCategoryId)
+            intent.putExtra("subCategoryName", data.get(headPosition).data.get(firPosition).data.get(secPosition).subCategoryName)
             ctx.startActivity(intent)
         })
 

@@ -263,7 +263,7 @@
 }
 
 .markdown-body h2 {
-    background: #2B6600;
+    background: #2B6695;
     border-radius: 6px 6px 6px 6px;
     box-shadow: 0 0 0 1px #5F5A4B, 1px 1px 6px 1px rgba(10, 10, 0, 0.5);
     color: #FFFFFF;
@@ -460,7 +460,7 @@
 }
 
 .markdown-body h3 {
-    background: #2B6695;
+    background: #2B6600;
     border-radius: 6px 6px 6px 6px;
     box-shadow: 0 0 0 1px #5F5A4B, 1px 1px 6px 1px rgba(10, 10, 0, 0.5);
     color: #FFFFFF;
