@@ -198,7 +198,6 @@ class MarkdownActivity : AppCompatActivity() {
                             } else {
                                 Toast.makeText(ctx, "暂无数据", Toast.LENGTH_SHORT).show()
                             }
-                            Thread.sleep(1000)
                             progressDialog.dismiss();//去掉加载框
                             // Gets a handle to the clipboard service.
                             val clipboard: ClipboardManager =

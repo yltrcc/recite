@@ -12,32 +12,37 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="99"
+        android:layout_weight="199"
         android:orientation="vertical">
-        <!--        今日任务：每天一个分类-->
-        <EditText
-            android:id="@+id/main_category"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <Button
-            android:id="@+id/main_start_learn"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="开始学习" />
+            android:orientation="vertical">
+            <!--        今日任务：每天一个分类-->
+            <EditText
+                android:id="@+id/main_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/main_start_learn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="开始学习" />
 
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="99"
-        android:orientation="vertical">
-        <Button
-            android:id="@+id/main_random_article"
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="随机生成公众号文章" />
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/main_random_article"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="随机生成公众号文章" />
 
+        </LinearLayout>
     </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"
