@@ -23,13 +23,21 @@
 
             <Button
                 android:id="@+id/mk_cv"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:text="复制内容到粘贴板"/>
             <Button
-                android:id="@+id/mk_category_cv"
-                android:layout_width="match_parent"
+                android:id="@+id/mk_sub_category_cv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="复制分类下内容到粘贴板"/>
+            <Button
+                android:id="@+id/mk_category_cv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:text="复制分类下内容到粘贴板"/>
         </LinearLayout>
 

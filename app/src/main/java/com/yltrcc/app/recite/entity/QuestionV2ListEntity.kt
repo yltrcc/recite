@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class QuestionV2ListEntity(
     val categoryName: String,
-    val data: List<QuestionListEntity> ,
+    val categoryId: Int,
+    val data: List<QuestionListEntity>
 ): Parcelable

@@ -255,6 +255,8 @@ class QuestionActivity : AppCompatActivity() {
             intent.putExtra("content", questionData.get(position).articleContentMd)
             intent.putExtra("subCategoryId", data.get(headPosition).data.get(firPosition).data.get(secPosition).subCategoryId)
             intent.putExtra("subCategoryName", data.get(headPosition).data.get(firPosition).data.get(secPosition).subCategoryName)
+            intent.putExtra("categoryName", data.get(headPosition).data.get(firPosition).categoryName)
+            intent.putExtra("categoryId", data.get(headPosition).data.get(firPosition).categoryId)
             ctx.startActivity(intent)
         })
 
