@@ -43,6 +43,27 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <receiver
+            android:name=".AppWidget"
+            android:exported="false">
+            <intent-filter>
+                <!--点击按钮-->
+                <action android:name="action_button" />
+            </intent-filter>
+            <intent-filter>
+                <!--更新数据到textview-->
+                <action android:name="action_update" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget" />
+        </receiver>
     </application>
+
 
 </manifest>
