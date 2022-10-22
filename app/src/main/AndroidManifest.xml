@@ -34,6 +34,7 @@
         <activity android:name=".activity.QuestionActivity" />
         <activity android:name=".activity.AlgorithmActivity" />
         <activity android:name=".activity.ArticleActivity" />
+        <activity android:name=".activity.EditActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.yltrcc.app.recite.fileProvider"
@@ -45,7 +46,7 @@
         </provider>
 
         <receiver
-            android:name=".AppWidget"
+            android:name=".activity.AppWidget"
             android:exported="false">
             <intent-filter>
                 <!--点击按钮-->
@@ -63,6 +64,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget" />
         </receiver>
+
+        <service android:name=".service.MyService"/>
     </application>
 
 

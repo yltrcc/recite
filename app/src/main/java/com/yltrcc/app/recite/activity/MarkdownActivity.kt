@@ -39,6 +39,7 @@ class MarkdownActivity : AppCompatActivity() {
     private var categoryName: String = ""
     private var subCategoryId: Int = -1
     private var categoryId: Int = -1
+    private var id: Int = -1
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +50,7 @@ class MarkdownActivity : AppCompatActivity() {
         val cvBtn: Button = findViewById(R.id.mk_cv)
         val cvSubCategoryBtn: Button = findViewById(R.id.mk_sub_category_cv)
         val cvCategoryBtn: Button = findViewById(R.id.mk_category_cv)
+        val editContentBtn: Button = findViewById(R.id.mk_category_edit)
         ctx = this
         //接收内容
         val content = intent.getStringExtra("content")
@@ -56,6 +58,7 @@ class MarkdownActivity : AppCompatActivity() {
         subCategoryName = intent.getStringExtra("subCategoryName").toString()
         categoryName = intent.getStringExtra("categoryName").toString()
         categoryId = intent.getIntExtra("categoryId", -1)
+        id = intent.getIntExtra("id", -1)
         if (-1 != subCategoryId) {
             cvSubCategoryBtn.visibility = View.VISIBLE
             cvSubCategoryBtn.text = "复制子分类: " + subCategoryName
@@ -73,8 +76,6 @@ class MarkdownActivity : AppCompatActivity() {
         cvBtn.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
-                //跳转到具体的面试题详情页面
-
                 // Gets a handle to the clipboard service.
                 val clipboard: ClipboardManager =
                     getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -101,6 +102,17 @@ class MarkdownActivity : AppCompatActivity() {
             }
         })
         markdownWebView.setText(content)
+        editContentBtn.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                //跳转到编辑详情页面
+                val intent = Intent()
+                intent.setClass(ctx, EditActivity::class.java)
+                intent.putExtra("content", content)
+                intent.putExtra("id", id)
+                ctx.startActivity(intent)
+            }
+
+        })
     }
 
     //HTTP GET

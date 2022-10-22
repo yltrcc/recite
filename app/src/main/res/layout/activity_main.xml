@@ -41,6 +41,29 @@
                 android:text="随机生成公众号文章" />
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/main_test"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="发送通知" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发送聊天消息"
+                android:onClick="sendChatMsg"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发送订阅消息"
+                android:onClick="sendSubscribeMsg"
+                />
+        </LinearLayout>
     </LinearLayout>
 
 

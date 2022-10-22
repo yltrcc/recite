@@ -11,11 +11,9 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.yltrcc.app.recite.R
 import com.yltrcc.app.recite.activity.MainActivity
-import com.yltrcc.app.recite.service.MyService
-import com.yltrcc.app.recite.utils.AlarmManagerUtils
-import java.lang.UnsupportedOperationException
 
-class MyService : Service() {
+
+class NotificationService : Service() {
     override fun onBind(intent: Intent): IBinder? {
         // TODO: Return the communication channel to the service.
         throw UnsupportedOperationException("Not yet implemented")
@@ -23,7 +21,7 @@ class MyService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Thread {
-            Log.d(MyService.TAG, "run: ")
+            Log.d(TAG, "run: ")
             val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             //通知点击事项
             //通知点击事项
@@ -40,13 +38,10 @@ class MyService : Service() {
                 .build()
             manager.notify(1, notification)
         }.start()
-        val alarmManagerUtils = AlarmManagerUtils(this)
-        alarmManagerUtils.init()
-        alarmManagerUtils.getUpAlarmManagerWorkOnOthers()
         return super.onStartCommand(intent, flags, startId)
     }
 
     companion object {
-        private const val TAG = "MyService"
+        private const val TAG = "NotificationService"
     }
 }

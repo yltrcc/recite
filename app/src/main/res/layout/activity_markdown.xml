@@ -39,6 +39,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="复制分类下内容到粘贴板"/>
+            <Button
+                android:id="@+id/mk_category_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="编辑内容"/>
         </LinearLayout>
 
     </ScrollView>

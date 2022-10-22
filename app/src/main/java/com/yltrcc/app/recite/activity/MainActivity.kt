@@ -1,32 +1,32 @@
 package com.yltrcc.app.recite.activity
 
-import android.app.AlertDialog
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.yltrcc.app.recite.R
-import com.yltrcc.app.recite.entity.QuestionV3ListEntity
-import com.yltrcc.app.recite.entity.Response
-import com.yltrcc.app.recite.utils.ConstantUtils
-import com.yltrcc.app.recite.utils.DownloadUtil
-import com.yltrcc.app.recite.utils.HttpUtil
-import com.yltrcc.app.recite.utils.StatusBarUtils
+import com.yltrcc.app.recite.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var ctx: Context
     private lateinit var file: File
+    private var alarmManagerUtils: AlarmManagerUtils? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         StatusBarUtils.setStatusBar(window, R.color.colorPrimary)
         ctx = this
         init() //初始化列表数据
-
         //如果sp有数据
         val taskCategorySP: SharedPreferences =
             getSharedPreferences("taskCategory", MODE_PRIVATE)
@@ -56,7 +56,9 @@ class MainActivity : AppCompatActivity() {
         val taskCategory: TextView = findViewById(R.id.main_category)
         val startLearn: Button = findViewById(R.id.main_start_learn)
         val randomArticle: Button = findViewById(R.id.main_random_article)
+        val test: Button = findViewById(R.id.main_test)
 
+        alarmManagerUtils = AlarmManagerUtils(ctx)
         var text: String = ""
         if ((questionValue != null) && questionValue.isNotEmpty()) {
             text += "" + questionValue.split("@")[1] + '\n'
@@ -75,9 +77,9 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent()
                 intent.setClass(ctx, QuestionActivity::class.java)
                 if (questionValue == "") {
-                    intent.putExtra("index",  "0" )
-                }else {
-                    intent.putExtra("index", questionValue!!.split("@")[0] )
+                    intent.putExtra("index", "0")
+                } else {
+                    intent.putExtra("index", questionValue!!.split("@")[0])
                 }
                 ctx.startActivity(intent)
             }
@@ -88,6 +90,23 @@ class MainActivity : AppCompatActivity() {
                 getRandomArticle()
             }
         })
+        alarmManagerUtils!!.init()
+
+        test.setOnClickListener(object : View.OnClickListener {
+            override
+            fun onClick(view: View) {
+                //
+                alarmManagerUtils!!.getUpAlarmManagerStartWork()
+                Toast.makeText(applicationContext, "设置成功", Toast.LENGTH_SHORT).show()
+
+            }
+        })
+        //定时任务 触发
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 12)
+        calendar.set(Calendar.MINUTE, 56)
+        calendar.set(Calendar.SECOND, 0)
+        alarmManagerUtils!!.setUpAlarmManagerStartWork(calendar)
         btnCategory.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
@@ -121,6 +140,41 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         })
+
+/*        var channelId = "chat"
+        var channelName = "聊天消息"
+        var importance = NotificationManager.IMPORTANCE_HIGH
+        createNotificationChannel(channelId!!, channelName!!, importance)
+        channelId = "subscribe"
+        channelName = "订阅消息"
+        importance = NotificationManager.IMPORTANCE_DEFAULT
+        createNotificationChannel(channelId, channelName, importance)*/
+    }
+
+    fun sendChatMsg(view: View?) {
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notification: Notification = NotificationCompat.Builder(this, "chat")
+            .setContentTitle("收到一条聊天消息")
+            .setContentText("今天中午吃什么？")
+            .setWhen(System.currentTimeMillis())
+            .setSmallIcon(R.drawable.diannao)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.diannao))
+            .setAutoCancel(true)
+            .build()
+        manager.notify(1, notification)
+    }
+
+    fun sendSubscribeMsg(view: View?) {
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notification: Notification = NotificationCompat.Builder(this, "subscribe")
+            .setContentTitle("收到一条订阅消息")
+            .setContentText("地铁沿线30万商铺抢购中！")
+            .setWhen(System.currentTimeMillis())
+            .setSmallIcon(R.drawable.diannao)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.diannao))
+            .setAutoCancel(true)
+            .build()
+        manager.notify(2, notification)
     }
 
     private fun init() {

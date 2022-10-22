@@ -3,7 +3,7 @@ package com.yltrcc.app.recite.utils;
 
 public class ConstantUtils {
 
-    public static final String BASE_API = "https://www.ylcoder.top/api";
+    public static final String BASE_API = "http://129.28.156.166:10000/api";
     //public static final String BASE_API = "http://127.0.0.1:8081/api";
 
     //面试题

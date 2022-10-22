@@ -74,7 +74,7 @@ class SplashActivity : AppCompatActivity() {
         val http = HttpUtil()
 
         //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(ConstantUtils.UPDATE_VERIFY_URL, 1L, TimeUnit.SECONDS) }.await()
+        async(Dispatchers.Default) { http.httpGET2(ConstantUtils.UPDATE_VERIFY_URL, 4L, TimeUnit.SECONDS) }.await()
             ?.let {
                 //表示数据不一致 需要更新
                 val sharedPreferences: SharedPreferences =
@@ -96,7 +96,7 @@ class SplashActivity : AppCompatActivity() {
         supervisorScope {
             try {
                 //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-                async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 1L, TimeUnit.SECONDS) }.await()
+                async(Dispatchers.Default) { http.httpGET2(queryUrlAll, 4L, TimeUnit.SECONDS) }.await()
                     ?.let {
                         val result = Gson().fromJson<Response<QuestionV3ListEntity>>(
                             it,
