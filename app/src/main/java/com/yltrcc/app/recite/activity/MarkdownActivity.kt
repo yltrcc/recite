@@ -39,7 +39,7 @@ class MarkdownActivity : AppCompatActivity() {
     private var categoryName: String = ""
     private var subCategoryId: Int = -1
     private var categoryId: Int = -1
-    private var id: Int = -1
+    private var id: Long = -1
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +58,7 @@ class MarkdownActivity : AppCompatActivity() {
         subCategoryName = intent.getStringExtra("subCategoryName").toString()
         categoryName = intent.getStringExtra("categoryName").toString()
         categoryId = intent.getIntExtra("categoryId", -1)
-        id = intent.getIntExtra("id", -1)
+        id = intent.getLongExtra("id", -1)
         if (-1 != subCategoryId) {
             cvSubCategoryBtn.visibility = View.VISIBLE
             cvSubCategoryBtn.text = "复制子分类: " + subCategoryName
@@ -110,6 +110,7 @@ class MarkdownActivity : AppCompatActivity() {
                 intent.putExtra("content", content)
                 intent.putExtra("id", id)
                 ctx.startActivity(intent)
+                finish()
             }
 
         })

@@ -1,9 +1,10 @@
 package com.yltrcc.app.recite.utils
 
+import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.internal.connection
 import java.util.concurrent.TimeUnit
+
 
 class HttpUtil {
     fun httpGET1(url : String): String? {
@@ -22,6 +23,20 @@ class HttpUtil {
             .url(url)
             .build()
 
+        val response = OkHttpClient().newBuilder()
+            .connectTimeout(timeout, unit)
+            .readTimeout(timeout, unit)
+            .build().newCall(request).execute()
+        val body = response.body?.string()
+        return body
+    }
+
+    fun post(url: String, timeout:Long, unit: TimeUnit, fromBody: FormBody): String? {
+        //获取post方式的请求对象
+        val request: Request = Request.Builder()
+            .post(fromBody)
+            .url(url)
+            .build()
         val response = OkHttpClient().newBuilder()
             .connectTimeout(timeout, unit)
             .readTimeout(timeout, unit)

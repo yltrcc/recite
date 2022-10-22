@@ -10,6 +10,7 @@ public class ConstantUtils {
     public static final String QUESTION_QUERYALLV3 = "/question/queryAllCategoryV3";
     public static final String QUESTION_QUESTION_BY_SUB = "/question/queryQuestionBySubCategoryId";
     public static final String QUESTION_QUESTION_BY_CATEGORY_ID = "/question/queryQuestionByCategoryId";
+    public static final String UPDATE_CONTENT = "/question/updateContent";
 
     //算法
     public static final String QUESTION_QUESTION_ALL_ALGORITHM = "/question/queryAllAlgorithm";
