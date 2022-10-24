@@ -65,26 +65,6 @@ class SplashActivity : AppCompatActivity() {
 
     }
 
-    /**
-     * APP版本更新判断
-     * https://gitee.com/api/v5/repos/yltrcc/recite/contents/%2Fapk%2F1.txt
-     * 请求最新版本号保存到本地sp
-     */
-    fun job() = GlobalScope.launch(Dispatchers.Main) {
-        val http = HttpUtil()
-
-        //不能在UI线程进行请求，使用async起到后台线程，使用await获取结果
-        async(Dispatchers.Default) { http.httpGET2(ConstantUtils.UPDATE_VERIFY_URL, 4L, TimeUnit.SECONDS) }.await()
-            ?.let {
-                //表示数据不一致 需要更新
-                val sharedPreferences: SharedPreferences =
-                    getSharedPreferences("versionCode", MODE_PRIVATE)
-                val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                editor.putInt("data",it.toInt())
-                editor.apply()
-            }
-    }
-
 
 
     /**

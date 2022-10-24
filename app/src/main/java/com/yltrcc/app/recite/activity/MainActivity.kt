@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var ctx: Context
     private lateinit var file: File
-    private var alarmManagerUtils: AlarmManagerUtils? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,9 +55,7 @@ class MainActivity : AppCompatActivity() {
         val taskCategory: TextView = findViewById(R.id.main_category)
         val startLearn: Button = findViewById(R.id.main_start_learn)
         val randomArticle: Button = findViewById(R.id.main_random_article)
-        val test: Button = findViewById(R.id.main_test)
 
-        alarmManagerUtils = AlarmManagerUtils(ctx)
         var text: String = ""
         if ((questionValue != null) && questionValue.isNotEmpty()) {
             text += "" + questionValue.split("@")[1] + '\n'
@@ -90,23 +87,7 @@ class MainActivity : AppCompatActivity() {
                 getRandomArticle()
             }
         })
-        alarmManagerUtils!!.init()
 
-        test.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //
-                alarmManagerUtils!!.getUpAlarmManagerStartWork()
-                Toast.makeText(applicationContext, "设置成功", Toast.LENGTH_SHORT).show()
-
-            }
-        })
-        //定时任务 触发
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 12)
-        calendar.set(Calendar.MINUTE, 56)
-        calendar.set(Calendar.SECOND, 0)
-        alarmManagerUtils!!.setUpAlarmManagerStartWork(calendar)
         btnCategory.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
@@ -140,15 +121,6 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         })
-
-/*        var channelId = "chat"
-        var channelName = "聊天消息"
-        var importance = NotificationManager.IMPORTANCE_HIGH
-        createNotificationChannel(channelId!!, channelName!!, importance)
-        channelId = "subscribe"
-        channelName = "订阅消息"
-        importance = NotificationManager.IMPORTANCE_DEFAULT
-        createNotificationChannel(channelId, channelName, importance)*/
     }
 
     fun sendChatMsg(view: View?) {

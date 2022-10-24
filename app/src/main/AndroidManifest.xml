@@ -65,7 +65,6 @@
                 android:resource="@xml/appwidget" />
         </receiver>
 
-        <service android:name=".service.MyService"/>
     </application>
 
 

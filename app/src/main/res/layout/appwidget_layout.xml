@@ -5,15 +5,15 @@
     android:orientation="horizontal">
 
     <Button
-        android:id="@+id/btn"
+        android:id="@+id/widget_btn_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="按钮" />
 
     <TextView
-        android:id="@+id/tv"
+        android:id="@+id/widget_tv_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="80dp"
         android:text="text" />
+
 </LinearLayout>

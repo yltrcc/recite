@@ -129,7 +129,7 @@ class AlgorithmActivity : AppCompatActivity() {
 
         // 一定要设置这个属性，否则ListView不会刷新
         initV3Adapter(data[0].data)
-        morelist!!.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, id ->
+        morelist!!.setOnItemClickListener({ _, view, position, id ->
             moreAdapter?.setSelectItem(position)
             moreAdapter?.notifyDataSetChanged()
             println("点击了第 " + headPosition + "," + firPosition + "," + secPosition + "," + position + "个位置")
