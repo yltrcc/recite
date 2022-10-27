@@ -1,7 +1,6 @@
 package com.yltrcc.app.recite.activity
 
 import android.app.Notification
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.ProgressDialog
 import android.content.ContentValues.TAG
@@ -11,15 +10,25 @@ import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
+import android.widget.AdapterView
 import android.widget.Button
+import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import com.yltrcc.app.recite.R
+import com.yltrcc.app.recite.adapter.ContactAdapter
+import com.yltrcc.app.recite.adapter.SimpleMenuAdapter
+import com.yltrcc.app.recite.bean.ContactShowInfo
+import com.yltrcc.app.recite.component.PopupMenuWindows
 import com.yltrcc.app.recite.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -34,6 +43,14 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var ctx: Context
     private lateinit var file: File
+
+    val TYPE_USER = 0x11
+    val TYPE_SERVICE = 0X12
+    val TYPE_SUBSCRIBE = 0x13
+    private var toolbarHeight = 0
+    private var statusBarHeight: Int = 0
+
+    private val mHandler = Handler()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,6 +138,16 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         })
+        HelpUtils.transparentNav(this)
+
+        val bar = findViewById<Toolbar>(R.id.activity_wechat_toolbar)
+        setSupportActionBar(bar)
+        supportActionBar!!.setTitle("")
+        initData()
+
+        bar.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        toolbarHeight = bar.measuredHeight
+        statusBarHeight = HelpUtils.getStatusBarHeight(this@MainActivity)
     }
 
     fun sendChatMsg(view: View?) {
@@ -181,7 +208,7 @@ class MainActivity : AppCompatActivity() {
         async(Dispatchers.Default) {
             http.httpGET2(
                 ConstantUtils.RANDOM_ARTICLE,
-                1L, TimeUnit.SECONDS
+                9L, TimeUnit.SECONDS
             )
         }.await()
             ?.let {
@@ -262,5 +289,210 @@ class MainActivity : AppCompatActivity() {
         this.startActivity(intent)
         android.os.Process.killProcess(android.os.Process.myPid())
     }
+    private fun initData() {
+        val lv = findViewById<ListView>(R.id.activity_wechat_lv)
+        val headImgRes = intArrayOf(
+            R.drawable.hdimg_3, R.drawable.group1, R.drawable.hdimg_2, R.drawable.user_2,
+            R.drawable.user_3, R.drawable.user_4, R.drawable.user_5, R.drawable.hdimg_4,
+            R.drawable.hdimg_5, R.drawable.hdimg_6
+        )
+        val usernames = arrayOf(
+            "Fiona", "  ...   ", "冯小", "深圳社保", "服务通知", "招商银行信用卡",
+            "箫景、Fiona", "吴晓晓", "肖箫", "唐小晓"
+        )
+        //最新消息
+        val lastMsgs = arrayOf(
+            "我看看", "吴晓晓：无人超市啊", "最近在忙些什么", "八月一号猛料，内地社保在这2...",
+            "微信支付凭证", "#今日签到#你能到大的，比想象...", "箫景:准备去哪嗨", "[Video Call]", "什么东西？", "[微信红包]"
+        )
+        val lastMsgTimes = arrayOf(
+            "17:40", "10:56", "7月26日", "昨天", "7月27日", "09:46",
+            "7月18日", "星期一", "7月26日", "4月23日"
+        )
+        val types = intArrayOf(
+            WechatActivity.TYPE_USER,
+            WechatActivity.TYPE_USER,
+            WechatActivity.TYPE_USER,
+            WechatActivity.TYPE_SUBSCRIBE,
+            WechatActivity.TYPE_SERVICE,
+            WechatActivity.TYPE_SUBSCRIBE,
+            WechatActivity.TYPE_USER,
+            WechatActivity.TYPE_USER,
+            WechatActivity.TYPE_USER,
+            WechatActivity.TYPE_USER
+        )
+        //静音&已读
+        val isMutes =
+            booleanArrayOf(false, true, false, false, false, false, true, false, false, false)
+        val isReads = booleanArrayOf(true, true, true, true, true, true, true, true, true, true)
+        val infos: MutableList<ContactShowInfo> = mutableListOf<ContactShowInfo>()
+        for (i in headImgRes.indices) {
+            infos.add(
+                i, ContactShowInfo(
+                    headImgRes[i],
+                    usernames[i], lastMsgs[i], lastMsgTimes[i], isMutes[i], isReads[i], types[i]
+                )
+            )
+        }
+        val adapter = ContactAdapter(this, R.layout.item_wechat_main, infos)
+        lv.adapter = adapter
+        lv.setOnTouchListener(object : OnTouchListener {
+            var preX = 0
+            var preY = 0
+            var isSlip = false
+            var isLongClick = false
+            override fun onTouch(v: View, event: MotionEvent): Boolean {
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        preX = event.x.toInt()
+                        preY = event.y.toInt()
+                        mHandler.postDelayed({
+                            isLongClick = true
+                            val x = event.x.toInt()
+                            val y = event.y.toInt()
+                            //延时500ms后，其Y的坐标加入了Toolbar和statusBar高度
+                            val position =
+                                lv.pointToPosition(x, y - toolbarHeight - statusBarHeight)
+                            initPopupMenu(v, x, y, adapter, position, infos)
+                        }, 500)
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        val nowX = event.x.toInt()
+                        val nowY = event.y.toInt()
+                        val movedX = Math.abs(nowX - preX)
+                        val movedY = Math.abs(nowY - preY)
+                        if (movedX > 50 || movedY > 50) {
+                            isSlip = true
+                            mHandler.removeCallbacksAndMessages(null)
+                            //处理滑动事件
+                        }
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        mHandler.removeCallbacksAndMessages(null)
+                        if (!isSlip && !isLongClick) {
+                            //处理单击事件
+                            val position = lv.pointToPosition(preX, preY)
+                            val intent = Intent(this@MainActivity, ChatActivity::class.java)
+                            intent.putExtra("name", usernames[position])
+                            intent.putExtra("profileId", headImgRes[position])
+                            startActivity(intent)
+                        } else {
+                            isSlip = false
+                            isLongClick = false
+                        }
+                    }
+                }
+                return false
+            }
+        })
+    }
 
+    /**
+     * 设置已读还是未读
+     *
+     * @param isRead   true已读，false未读
+     * @param position item position
+     * @param adapter  数据源
+     * @param datas
+     */
+    private fun setIsRead(
+        isRead: Boolean,
+        position: Int,
+        adapter: ContactAdapter,
+        datas: List<ContactShowInfo>
+    ) {
+        val info = datas[position]
+        info.isRead = isRead
+        adapter.notifyDataSetChanged()
+    }
+
+    /**
+     * 删除指定位置item
+     *
+     * @param position 指定删除position
+     * @param adapter  数据源
+     * @param datas
+     */
+    private fun deleteMsg(position: Int, adapter: ContactAdapter, datas: MutableList<ContactShowInfo>) {
+        datas.removeAt(position)
+        adapter.notifyDataSetChanged()
+    }
+
+    /**
+     * 初始化popup菜单
+     */
+    private fun initPopupMenu(
+        anchorView: View,
+        posX: Int,
+        posY: Int,
+        adapter: ContactAdapter,
+        itemPos: Int,
+        data: MutableList<ContactShowInfo>
+    ) {
+        val list: MutableList<String?> = ArrayList()
+        val showInfo = data[itemPos]
+        when (showInfo.accountType) {
+            WechatActivity.TYPE_SERVICE -> {
+                list.clear()
+                if (showInfo.isRead) {
+                    list.add("标为未读")
+                } else {
+                    list.add("标为已读")
+                }
+                list.add("删除该聊天")
+            }
+            WechatActivity.TYPE_SUBSCRIBE -> {
+                if (showInfo.isRead) {
+                    list.add("标为未读")
+                } else {
+                    list.add("标为已读")
+                }
+                list.add("置顶公众号")
+                list.add("取消关注")
+                list.add("删除该聊天")
+            }
+            WechatActivity.TYPE_USER -> {
+                list.clear()
+                if (showInfo.isRead) {
+                    list.add("标为未读")
+                } else {
+                    list.add("标为已读")
+                }
+                list.add("置顶聊天")
+                list.add("删除该聊天")
+            }
+        }
+        val menuAdapter = SimpleMenuAdapter<String>(this, R.layout.item_menu, list)
+        val ppm = PopupMenuWindows(this, R.layout.popup_menu_general_layout, menuAdapter)
+        val posArr = ppm.reckonPopWindowShowPos(posX, posY)
+        ppm.setAutoFitStyle(true)
+        ppm.setOnMenuItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+            when (list[position]) {
+                "标为未读" -> setIsRead(false, itemPos, adapter, data)
+                "标为已读" -> setIsRead(true, itemPos, adapter, data)
+                "置顶聊天", "置顶公众号" -> stickyTop(adapter, data, itemPos)
+                "取消关注", "删除该聊天" -> deleteMsg(itemPos, adapter, data)
+            }
+            ppm.dismiss()
+        }
+        ppm.showAtLocation(anchorView, Gravity.NO_GRAVITY, posArr[0], posArr[1])
+    }
+
+
+    /**
+     * 置顶item
+     *
+     * @param adapter
+     * @param datas
+     */
+    private fun stickyTop(adapter: ContactAdapter, datas: MutableList<ContactShowInfo>, position: Int) {
+        if (position > 0) {
+            val stickyTopItem = datas[position]
+            datas.removeAt(position)
+            datas.add(0, stickyTopItem)
+        } else {
+            return
+        }
+        adapter.notifyDataSetChanged()
+    }
 }

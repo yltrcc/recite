@@ -9,59 +9,119 @@
     android:weightSum="200"
     tools:context=".activity.MainActivity">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="199"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <!--        今日任务：每天一个分类-->
-            <EditText
-                android:id="@+id/main_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <Button
-                android:id="@+id/main_start_learn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="开始学习" />
+        android:layout_weight="199">
 
-        </LinearLayout>
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/activity_wechat_toolbar"
+            style="@style/ThemeOverlay.AppCompat"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <Button
-                android:id="@+id/main_random_article"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="随机生成公众号文章" />
+            android:layout_height="80dp"
+            android:background="@color/colorLightDark"
+            android:fitsSystemWindows="true"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="发送聊天消息"
-                android:onClick="sendChatMsg"
-                />
+                android:text="@string/wechat"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/content_text_normal" />
 
-            <Button
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="发送订阅消息"
-                android:onClick="sendSubscribeMsg"
-                />
-        </LinearLayout>
-    </LinearLayout>
+                android:layout_gravity="right"
+                android:background="?selectableItemBackground"
+                android:clickable="true"
+                android:padding="@dimen/item_margin_left"
+                android:src="@drawable/add" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="?selectableItemBackground"
+                android:clickable="true"
+                android:padding="@dimen/item_margin_left"
+                android:src="@drawable/search" />
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/activity_wechat_toolbar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <!--        今日任务：每天一个分类-->
+                <EditText
+                    android:id="@+id/main_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/main_start_learn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="开始学习" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/main_random_article"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="随机生成公众号文章" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="sendChatMsg"
+                    android:text="发送聊天消息" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="sendSubscribeMsg"
+                    android:text="发送订阅消息" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/activity_wechat_lv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:layout_width="match_parent"

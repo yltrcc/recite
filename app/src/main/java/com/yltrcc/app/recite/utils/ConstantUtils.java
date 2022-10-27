@@ -25,6 +25,6 @@ public class ConstantUtils {
     public static final String QUERY_ARTICLE = "/article/queryArticleByCategoryId";
 
     //随机生成公众号文章
-    public static final String RANDOM_ARTICLE = "https://www.ylcoder.top/api/random/getArticle";
+    public static final String RANDOM_ARTICLE = BASE_API + "/random/getArticle";
 
 }
