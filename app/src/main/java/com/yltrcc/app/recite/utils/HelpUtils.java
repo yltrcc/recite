@@ -1,12 +1,14 @@
 package com.yltrcc.app.recite.utils;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.view.Window;
-import android.view.WindowManager;
 
-import com.readystatesoftware.systembartint.SystemBarTintManager;
+import androidx.annotation.ColorRes;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+
 import com.yltrcc.app.recite.R;
 
 import java.text.SimpleDateFormat;
@@ -30,24 +32,6 @@ public class HelpUtils {
         Resources res = context.getResources();
         int resId = res.getIdentifier("status_bar_height", "dimen", "android");
         return res.getDimensionPixelSize(resId);
-
-        //也可以通过反射
-        /**
-         Class<?> c = null;
-         Object obj = null;
-         Field field = null;
-         int x = 0, statusBarHeight = 0;
-         try {
-         c = Class.forName("com.android.internal.R$dimen");
-         obj = c.newInstance();
-         field = c.getField("status_bar_height");
-         x = Integer.parseInt(field.get(obj).toString());
-         statusBarHeight = context.getResources().getDimensionPixelSize(x);
-         } catch (Exception e1) {
-         e1.printStackTrace();
-         }
-         return statusBarHeight;
-         */
     }
 
     /**
@@ -89,20 +73,24 @@ public class HelpUtils {
         return System.currentTimeMillis();
     }
 
+    /**
+     * 设置状态栏文字颜色
+     *
+     * @param window         window
+     * @param statusBarColor 状态栏的颜色
+     */
+    @SuppressLint("ResourceAsColor")
+    public static void setStatusBar(Window window, @ColorRes int statusBarColor) {
+        // 修改状态栏背景颜色，还是通用API，这个比较简单
+        window.setStatusBarColor(ResUtils.getColor(window.getContext(), statusBarColor));
 
-    public static void transparentNav(Activity activity) {
-        setTransparentStatus(activity);
-        SystemBarTintManager tintManager = new SystemBarTintManager(activity);
-        tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintResource(R.color.colorDark);
+        // 修改状态栏字体颜色，用AndroidX官方兼容API
+        WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(window.getDecorView());
+        if (windowInsetsController != null) {
+            // true表示Light Mode，状态栏字体呈黑色，反之呈白色
+            windowInsetsController.setAppearanceLightStatusBars(R.color.black == statusBarColor);
+        }
+
     }
 
-    private static void setTransparentStatus(Activity activity) {
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams params = win.getAttributes();
-        final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-        params.flags |= bits;
-
-        win.setAttributes(params);
-    }
 }

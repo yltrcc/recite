@@ -1,4 +1,4 @@
-package com.yltrcc.app.recite.activity
+package com.yltrcc.app.recite.widget
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import com.yltrcc.app.recite.R
+import com.yltrcc.app.recite.activity.study.StudyHomePageActivity
 
 
 /**
@@ -44,7 +45,7 @@ class AppWidget : AppWidgetProvider() {
             //新intent
 
             //设置点击跳转 Activity
-            val intent = Intent(context, MainActivity::class.java)
+            val intent = Intent(context, StudyHomePageActivity::class.java)
             //创建一个pendingIntent。另外两个参数以后再讲。
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             //创建一个remoteViews。

@@ -1,4 +1,4 @@
-package com.yltrcc.app.recite.activity;
+package com.yltrcc.app.recite.activity.study;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,7 +46,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wechat_chat);
 
-        HelpUtils.transparentNav(this);
         Toolbar bar = findViewById(R.id.activity_wechat_chat_toolbar);
         setSupportActionBar(bar);
         getSupportActionBar().setTitle("");

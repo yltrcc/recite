@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="200"
-    tools:context=".activity.QuestionActivity">
+    tools:context=".activity.study.QuestionActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,63 +56,9 @@
             tools:listitem="@layout/item_sub_category_more"/>
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/black" />
-    <LinearLayout
-        android:id="@+id/ll_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_weight="1"
-        android:background="@color/material_on_surface_stroke"
-        android:gravity="center"
-        android:orientation="horizontal">
 
-
-        <Button
-            android:id="@+id/category_btn_homepage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:textSize="18sp"
-            android:background="@color/material_on_surface_stroke"
-            android:text="首页"
-            android:textColor="@color/black" />
-
-        <Button
-            android:id="@+id/category_btn_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/material_on_surface_stroke"
-            android:text="面试"
-            android:textSize="18sp"
-            android:textColor="@color/red" />
-
-        <Button
-            android:id="@+id/category_btn_algorithm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="18sp"
-            android:background="@color/material_on_surface_stroke"
-            android:text="算法"
-            android:textColor="@color/black"
-            style="?android:attr/buttonBarButtonStyle" />
-
-        <Button
-            android:id="@+id/category_btn_article"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:textSize="18sp"
-            android:layout_weight="1"
-            android:background="@color/material_on_surface_stroke"
-            android:text="文章"
-            android:textColor="@color/black" />
-
-    </LinearLayout>
+    <include
+        android:id="@+id/bolck_titlebar_study"
+        layout="@layout/block_tabbar_study" />
 
 </LinearLayout>

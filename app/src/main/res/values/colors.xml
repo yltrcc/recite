@@ -16,7 +16,8 @@
     <color name="colorLightGrey">#ececec</color>
     <color name="colorLightTransparentGrey">#0fececec</color>
     <color name="colorTransparent">#00ffffff</color>
-    <color name="colorDarkGrey">#abaaaa</color>
+    <color name="colorDarkGrey">#EBE9E9</color>
+    <color name="colorGrey">#FFEBE9E9</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorRed">#ff4043</color>
     <color name="colorWhite">#ffffff</color>

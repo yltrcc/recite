@@ -21,21 +21,22 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"/>
+        <activity android:name=".activity.study.StudyHomePageActivity"/>
 
-        <activity android:name=".activity.MarkdownActivity" />
-        <activity android:name=".activity.QuestionActivity" />
-        <activity android:name=".activity.AlgorithmActivity" />
-        <activity android:name=".activity.ArticleActivity" />
-        <activity android:name=".activity.EditActivity" />
-        <activity android:name=".activity.ChatActivity" />
+        <activity android:name=".activity.study.MarkdownActivity" />
+        <activity android:name=".activity.study.QuestionActivity" />
+        <activity android:name=".activity.study.AlgorithmActivity" />
+        <activity android:name=".activity.study.ArticleActivity" />
+        <activity android:name=".activity.study.EditActivity" />
+        <activity android:name=".activity.study.ChatActivity" />
+        <activity android:name=".activity.todo.TodoHomePageActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.yltrcc.app.recite.fileProvider"
@@ -47,7 +48,7 @@
         </provider>
 
         <receiver
-            android:name=".activity.AppWidget"
+            android:name=".widget.AppWidget"
             android:exported="false">
             <intent-filter>
                 <!--点击按钮-->

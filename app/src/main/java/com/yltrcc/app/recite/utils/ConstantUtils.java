@@ -27,4 +27,9 @@ public class ConstantUtils {
     //随机生成公众号文章
     public static final String RANDOM_ARTICLE = BASE_API + "/random/getArticle";
 
+    public static final int INDEX_STUDY_HOME = 1;
+    public static final int INDEX_QUESTION = 2;
+    public static final int INDEX_ALGORITHM = 3;
+    public static final int INDEX_ARTICLE = 4;
+
 }

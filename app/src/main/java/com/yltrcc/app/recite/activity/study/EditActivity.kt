@@ -1,4 +1,4 @@
-package com.yltrcc.app.recite.activity
+package com.yltrcc.app.recite.activity.study
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
@@ -11,19 +11,10 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.yltrcc.app.recite.R
-import com.yltrcc.app.recite.entity.QuestionEntity
-import com.yltrcc.app.recite.entity.QuestionListEntity
-import com.yltrcc.app.recite.entity.QuestionV2ListEntity
-import com.yltrcc.app.recite.entity.Response
 import com.yltrcc.app.recite.utils.ConstantUtils
+import com.yltrcc.app.recite.utils.HelpUtils
 import com.yltrcc.app.recite.utils.HttpUtil
-import com.yltrcc.app.recite.utils.StatusBarUtils
-import com.yltrcc.app.recite.views.MarkdownWebView
-import com.youbenzi.mdtool.tool.MDTool
 import kotlinx.coroutines.*
 import okhttp3.FormBody
 import java.util.concurrent.TimeUnit
@@ -40,7 +31,7 @@ class EditActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        StatusBarUtils.setStatusBar(window, R.color.colorPrimary)
+        HelpUtils.setStatusBar(window, R.color.colorPrimary)
         setContentView(R.layout.activity_edit)
         val saveBtn: Button = findViewById(R.id.edit_btn_save)
         val cancelBtn: Button = findViewById(R.id.edit_btn_canel)

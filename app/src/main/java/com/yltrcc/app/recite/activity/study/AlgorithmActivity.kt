@@ -1,5 +1,6 @@
-package com.yltrcc.app.recite.activity
+package com.yltrcc.app.recite.activity.study
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
@@ -15,18 +16,17 @@ import com.google.gson.reflect.TypeToken
 import com.yltrcc.app.recite.*
 import com.yltrcc.app.recite.adapter.*
 import com.yltrcc.app.recite.entity.*
-import com.yltrcc.app.recite.utils.ConstantUtils
-import com.yltrcc.app.recite.utils.HttpUtil
-import com.yltrcc.app.recite.utils.StatusBarUtils
+import com.yltrcc.app.recite.utils.*
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 
 
-class ArticleActivity : AppCompatActivity() {
+class AlgorithmActivity : AppCompatActivity() {
 
-    private val TAG = ArticleActivity::class.java.simpleName
+    private val TAG = AlgorithmActivity::class.java.simpleName
     private lateinit var ctx: Context
-    private var queryAllAlgorithm = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUESTION_ALL_ALGORITHM
+    private var queryAllAlgorithm =
+        ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUESTION_ALL_ALGORITHM
     private var queryAlgorithm = ConstantUtils.BASE_API + ConstantUtils.QUESTION_QUESTION_BY_SUB
     private lateinit var data: List<QuestionV3ListEntity>
     private lateinit var questionData: MutableList<QuestionEntity>
@@ -53,9 +53,24 @@ class ArticleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_article)
-        StatusBarUtils.setStatusBar(window, R.color.colorPrimary)
+        setContentView(R.layout.activity_algorithm)
+        HelpUtils.setStatusBar(window, R.color.colorPrimary)
         ctx = this
+
+        //初始化列表数据
+        initData()
+
+    }
+
+    private fun initData() {
+        //初始化底部导航
+        TabBarUtils().initStudyTabBar(ConstantUtils.INDEX_ALGORITHM, this, ctx);
+
+        //初始化 分类 数据
+        initCategoryData()
+    }
+
+    private fun initCategoryData() {
         //判断本地是否有内存
         //如果sp有数据
         sharedPreferences = getSharedPreferences("AlgorithmActivity", MODE_PRIVATE)
@@ -70,6 +85,7 @@ class ArticleActivity : AppCompatActivity() {
         }
     }
 
+
     private fun initView() {
         mainlist = findViewById<View>(R.id.al_mainlist) as ListView
         mainV2list = findViewById<View>(R.id.al_main2list) as ListView
@@ -77,7 +93,7 @@ class ArticleActivity : AppCompatActivity() {
         morelist = findViewById<View>(R.id.al_morelist) as ListView
 
         mainV3Adapter = CategoryV3MainAdapter(
-            this@ArticleActivity,
+            this@AlgorithmActivity,
             data
         )
         mainV3Adapter!!.setSelectItem(0)
@@ -96,7 +112,7 @@ class ArticleActivity : AppCompatActivity() {
 
 
         mainV2Adapter = CategoryMainAdapter(
-            this@ArticleActivity,
+            this@AlgorithmActivity,
             data[0].data
         )
         mainV2Adapter!!.setSelectItem(0)
@@ -112,7 +128,7 @@ class ArticleActivity : AppCompatActivity() {
         mainV2list!!.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
 
         mainAdapter = SubCategoryMainAdapter(
-            this@ArticleActivity,
+            this@AlgorithmActivity,
             data[0].data[0].data
         )
         mainAdapter!!.setSelectItem(0)
@@ -129,7 +145,7 @@ class ArticleActivity : AppCompatActivity() {
 
         // 一定要设置这个属性，否则ListView不会刷新
         initV3Adapter(data[0].data)
-        morelist!!.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, id ->
+        morelist!!.setOnItemClickListener({ _, view, position, id ->
             moreAdapter?.setSelectItem(position)
             moreAdapter?.notifyDataSetChanged()
             println("点击了第 " + headPosition + "," + firPosition + "," + secPosition + "," + position + "个位置")
@@ -137,49 +153,20 @@ class ArticleActivity : AppCompatActivity() {
             val intent = Intent()
             intent.setClass(ctx, MarkdownActivity::class.java)
             intent.putExtra("content", questionData.get(position).articleContentMd)
-            intent.putExtra("subCategoryId", data.get(headPosition).data.get(firPosition).data.get(secPosition).subCategoryId)
-            intent.putExtra("subCategoryName", data.get(headPosition).data.get(firPosition).data.get(secPosition).subCategoryName)
+            intent.putExtra(
+                "subCategoryId",
+                data.get(headPosition).data.get(firPosition).data.get(secPosition).subCategoryId
+            )
+            intent.putExtra(
+                "subCategoryName",
+                data.get(headPosition).data.get(firPosition).data.get(secPosition).subCategoryName
+            )
             ctx.startActivity(intent)
         })
 
-
-        val btnHomepage: Button = findViewById(R.id.article_btn_homepage)
-        val btncategory: Button = findViewById(R.id.article_btn_question)
-        val btnAlgorithm: Button = findViewById(R.id.article_btn_algorithm)
-        btnHomepage.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的面试题详情页面
-                val intent = Intent()
-                overridePendingTransition(0, 0)
-                intent.setClass(ctx, MainActivity::class.java)
-                ctx.startActivity(intent)
-                finish()
-            }
-        })
-        btncategory.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的面试分类页面
-                val intent = Intent()
-                overridePendingTransition(0, 0)
-                intent.setClass(ctx, QuestionActivity::class.java)
-                ctx.startActivity(intent)
-                finish()
-            }
-        })
-        btnAlgorithm.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的面试分类页面
-                val intent = Intent()
-                overridePendingTransition(0, 0)
-                intent.setClass(ctx, AlgorithmActivity::class.java)
-                ctx.startActivity(intent)
-                finish()
-            }
-        })
     }
+
+
 
     //HTTP GET
     fun queryByCategory() = GlobalScope.launch(Dispatchers.Main) {
@@ -252,7 +239,7 @@ class ArticleActivity : AppCompatActivity() {
                                 secPosition = position
                                 //刷新本地缓存
                                 val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                                editor.putString(""+headPosition+firPosition+position, it)
+                                editor.putString("" + headPosition + firPosition + position, it)
                                 editor.apply()
                             } else {
                                 Toast.makeText(ctx, "暂无数据", Toast.LENGTH_SHORT).show()
@@ -274,7 +261,7 @@ class ArticleActivity : AppCompatActivity() {
                         mainAdapter!!.setSelectItem(position)
                         mainAdapter!!.notifyDataSetChanged()
                         secPosition = position
-                    }else {
+                    } else {
                         Toast.makeText(ctx, "暂无数据", Toast.LENGTH_SHORT).show()
                     }
                     progressDialog.dismiss();//去掉加载框
@@ -286,7 +273,7 @@ class ArticleActivity : AppCompatActivity() {
     private fun initV3Adapter(lists: List<QuestionV2ListEntity>) {
 
         mainV2Adapter = CategoryMainAdapter(
-            this@ArticleActivity,
+            this@AlgorithmActivity,
             lists
         )
         mainV2list?.setAdapter(mainV2Adapter)
@@ -294,7 +281,7 @@ class ArticleActivity : AppCompatActivity() {
 
 
         mainAdapter = SubCategoryMainAdapter(
-            this@ArticleActivity,
+            this@AlgorithmActivity,
             lists[0].data
         )
         mainlist?.setAdapter(mainAdapter)
@@ -315,7 +302,7 @@ class ArticleActivity : AppCompatActivity() {
     private fun initV2Adapter(lists: List<QuestionListEntity>) {
 
         mainAdapter = SubCategoryMainAdapter(
-            this@ArticleActivity,
+            this@AlgorithmActivity,
             lists
         )
         mainlist?.setAdapter(mainAdapter)

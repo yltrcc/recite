@@ -1,4 +1,4 @@
-package com.yltrcc.app.recite.activity
+package com.yltrcc.app.recite.activity.study
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -39,7 +39,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class MainActivity : AppCompatActivity() {
+class StudyHomePageActivity : AppCompatActivity() {
 
     private lateinit var ctx: Context
     private lateinit var file: File
@@ -55,100 +55,53 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        StatusBarUtils.setStatusBar(window, R.color.colorPrimary)
+        setContentView(R.layout.activity_homepage_study)
+        HelpUtils.setStatusBar(window, R.color.colorPrimary)
+
         ctx = this
-        init() //初始化列表数据
-        //如果sp有数据
-        val taskCategorySP: SharedPreferences =
-            getSharedPreferences("taskCategory", MODE_PRIVATE)
 
-        val questionValue: String? = taskCategorySP.getString("question", "")
-        val algorithmValue: String? = taskCategorySP.getString("algorithm", "")
+        //初始化数据
+        initData()
+    }
 
-        val btnCategory: Button = findViewById(R.id.main_btn_category)
-        val btnAlgorithm: Button = findViewById(R.id.main_btn_algorithm)
-        val btnArticle: Button = findViewById(R.id.main_btn_article)
-        val taskCategory: TextView = findViewById(R.id.main_category)
-        val startLearn: Button = findViewById(R.id.main_start_learn)
+    private fun initData() {
+
+        //初始化 头部导航栏
+        initToolBar()
+
+        //初始化 底部导航栏
+        TabBarUtils().initStudyTabBar(ConstantUtils.INDEX_STUDY_HOME, this, ctx);
+
+        //更新 app 逻辑
+        updateApp();
+
+        //初始化 学习进度
+        initStudyProgress();
+
+        //初始化 首页微信数据
+        initChatData()
+
         val randomArticle: Button = findViewById(R.id.main_random_article)
-
-        var text: String = ""
-        if ((questionValue != null) && questionValue.isNotEmpty()) {
-            text += "" + questionValue.split("@")[1] + '\n'
-        }
-        if ((algorithmValue != null) && algorithmValue.isNotEmpty()) {
-            text += "" + algorithmValue.split("@")[1] + '\n'
-        }
-        if (text.length == 0) {
-            text = "java核心知识"
-        }
-        taskCategory.setText(text)
-        startLearn.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的面试题分类 ~@~!
-                val intent = Intent()
-                intent.setClass(ctx, QuestionActivity::class.java)
-                if (questionValue == "") {
-                    intent.putExtra("index", "0")
-                } else {
-                    intent.putExtra("index", questionValue!!.split("@")[0])
-                }
-                ctx.startActivity(intent)
-            }
-        })
         randomArticle.setOnClickListener(object : View.OnClickListener {
             override
             fun onClick(view: View) {
                 getRandomArticle()
             }
         })
+    }
 
-        btnCategory.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的面试题详情页面
-                val intent = Intent()
-                overridePendingTransition(0, 0)
-                intent.setClass(ctx, QuestionActivity::class.java)
-                ctx.startActivity(intent)
-                finish()
-            }
-        })
-        btnAlgorithm.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的算法分类页面
-                val intent = Intent()
-                overridePendingTransition(0, 0)
-                intent.setClass(ctx, AlgorithmActivity::class.java)
-                ctx.startActivity(intent)
-                finish()
-            }
-        })
-        btnArticle.setOnClickListener(object : View.OnClickListener {
-            override
-            fun onClick(view: View) {
-                //跳转到具体的算法分类页面
-                val intent = Intent()
-                overridePendingTransition(0, 0)
-                intent.setClass(ctx, ArticleActivity::class.java)
-                ctx.startActivity(intent)
-                finish()
-            }
-        })
-        HelpUtils.transparentNav(this)
+    private fun initToolBar() {
 
         val bar = findViewById<Toolbar>(R.id.activity_wechat_toolbar)
         setSupportActionBar(bar)
         supportActionBar!!.setTitle("")
-        initData()
+
 
         bar.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         toolbarHeight = bar.measuredHeight
-        statusBarHeight = HelpUtils.getStatusBarHeight(this@MainActivity)
+        statusBarHeight = HelpUtils.getStatusBarHeight(this@StudyHomePageActivity)
     }
+
 
     fun sendChatMsg(view: View?) {
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -176,7 +129,50 @@ class MainActivity : AppCompatActivity() {
         manager.notify(2, notification)
     }
 
-    private fun init() {
+
+
+    private fun initStudyProgress() {
+
+        //如果sp有数据
+        val taskCategorySP: SharedPreferences = getSharedPreferences("taskCategory", MODE_PRIVATE)
+
+        val questionValue: String? = taskCategorySP.getString("question", "")
+        val algorithmValue: String? = taskCategorySP.getString("algorithm", "")
+
+
+        val taskCategory: TextView = findViewById(R.id.main_category)
+        val startLearn: Button = findViewById(R.id.main_start_learn)
+
+        var text: String = ""
+        if ((questionValue != null) && questionValue.isNotEmpty()) {
+            text += "" + questionValue.split("@")[1] + '\n'
+        }
+        if ((algorithmValue != null) && algorithmValue.isNotEmpty()) {
+            text += "" + algorithmValue.split("@")[1] + '\n'
+        }
+        if (text.length == 0) {
+            text = "java核心知识"
+        }
+        taskCategory.setText(text)
+
+        startLearn.setOnClickListener(object : View.OnClickListener {
+            override
+            fun onClick(view: View) {
+                //跳转到具体的面试题分类 ~@~!
+                val intent = Intent()
+                intent.setClass(ctx, QuestionActivity::class.java)
+                if (questionValue == "") {
+                    intent.putExtra("index", "0")
+                } else {
+                    intent.putExtra("index", questionValue!!.split("@")[0])
+                }
+                ctx.startActivity(intent)
+            }
+        })
+
+    }
+
+    private fun updateApp() {
         //判断是否需要更新APP https://gitee.com/yltrcc/recite/raw/master/apk/app-debug.apk
         //获取apk的版本号 currentVersionCode
         val sharedPreferences: SharedPreferences =
@@ -194,8 +190,9 @@ class MainActivity : AppCompatActivity() {
                         doDownload()
                     }).show()
         }*/
-
     }
+
+
 
     //HTTP GET
     fun getRandomArticle() = GlobalScope.launch(Dispatchers.Main) {
@@ -289,7 +286,7 @@ class MainActivity : AppCompatActivity() {
         this.startActivity(intent)
         android.os.Process.killProcess(android.os.Process.myPid())
     }
-    private fun initData() {
+    private fun initChatData() {
         val lv = findViewById<ListView>(R.id.activity_wechat_lv)
         val headImgRes = intArrayOf(
             R.drawable.hdimg_3, R.drawable.group1, R.drawable.hdimg_2, R.drawable.user_2,
@@ -310,16 +307,16 @@ class MainActivity : AppCompatActivity() {
             "7月18日", "星期一", "7月26日", "4月23日"
         )
         val types = intArrayOf(
-            WechatActivity.TYPE_USER,
-            WechatActivity.TYPE_USER,
-            WechatActivity.TYPE_USER,
-            WechatActivity.TYPE_SUBSCRIBE,
-            WechatActivity.TYPE_SERVICE,
-            WechatActivity.TYPE_SUBSCRIBE,
-            WechatActivity.TYPE_USER,
-            WechatActivity.TYPE_USER,
-            WechatActivity.TYPE_USER,
-            WechatActivity.TYPE_USER
+            this.TYPE_USER,
+            this.TYPE_USER,
+            this.TYPE_USER,
+            this.TYPE_SUBSCRIBE,
+            this.TYPE_SERVICE,
+            this.TYPE_SUBSCRIBE,
+            this.TYPE_USER,
+            this.TYPE_USER,
+            this.TYPE_USER,
+            this.TYPE_USER
         )
         //静音&已读
         val isMutes =
@@ -372,7 +369,7 @@ class MainActivity : AppCompatActivity() {
                         if (!isSlip && !isLongClick) {
                             //处理单击事件
                             val position = lv.pointToPosition(preX, preY)
-                            val intent = Intent(this@MainActivity, ChatActivity::class.java)
+                            val intent = Intent(this@StudyHomePageActivity, ChatActivity::class.java)
                             intent.putExtra("name", usernames[position])
                             intent.putExtra("profileId", headImgRes[position])
                             startActivity(intent)
@@ -432,7 +429,7 @@ class MainActivity : AppCompatActivity() {
         val list: MutableList<String?> = ArrayList()
         val showInfo = data[itemPos]
         when (showInfo.accountType) {
-            WechatActivity.TYPE_SERVICE -> {
+            this.TYPE_SERVICE -> {
                 list.clear()
                 if (showInfo.isRead) {
                     list.add("标为未读")
@@ -441,7 +438,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 list.add("删除该聊天")
             }
-            WechatActivity.TYPE_SUBSCRIBE -> {
+            this.TYPE_SUBSCRIBE -> {
                 if (showInfo.isRead) {
                     list.add("标为未读")
                 } else {
@@ -451,7 +448,7 @@ class MainActivity : AppCompatActivity() {
                 list.add("取消关注")
                 list.add("删除该聊天")
             }
-            WechatActivity.TYPE_USER -> {
+            this.TYPE_USER -> {
                 list.clear()
                 if (showInfo.isRead) {
                     list.add("标为未读")

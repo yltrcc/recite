@@ -1,4 +1,4 @@
-package com.yltrcc.app.recite
+package com.yltrcc.app.recite.activity
 
 import android.content.Context
 import android.content.Intent
@@ -8,12 +8,13 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.yltrcc.app.recite.activity.MainActivity
+import com.yltrcc.app.recite.R
+import com.yltrcc.app.recite.activity.study.StudyHomePageActivity
 import com.yltrcc.app.recite.entity.QuestionV3ListEntity
 import com.yltrcc.app.recite.entity.Response
 import com.yltrcc.app.recite.utils.ConstantUtils
+import com.yltrcc.app.recite.utils.HelpUtils
 import com.yltrcc.app.recite.utils.HttpUtil
-import com.yltrcc.app.recite.utils.StatusBarUtils
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 
@@ -30,7 +31,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         ctx = this
-        StatusBarUtils.setStatusBar(window, R.color.black)
+        HelpUtils.setStatusBar(window, R.color.black)
 
         //异步拉取数据
         jobAll()
@@ -50,7 +51,7 @@ class SplashActivity : AppCompatActivity() {
                 Thread.sleep(1500) //睡眠1.5s
                 val intent = Intent()
                 overridePendingTransition(0, 0)
-                intent.setClass(ctx, MainActivity::class.java)
+                intent.setClass(ctx, StudyHomePageActivity::class.java)
                 ctx.startActivity(intent)
                 finish()
             } catch (e: InterruptedException) {

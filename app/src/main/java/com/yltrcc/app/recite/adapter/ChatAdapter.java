@@ -13,7 +13,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yltrcc.app.recite.R;
-import com.yltrcc.app.recite.activity.ChatActivity;
+import com.yltrcc.app.recite.activity.study.ChatActivity;
 import com.yltrcc.app.recite.bean.MsgData;
 import com.yltrcc.app.recite.utils.HelpUtils;
 

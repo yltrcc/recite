@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="200"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.study.StudyHomePageActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,10 +16,9 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/activity_wechat_toolbar"
-            style="@style/ThemeOverlay.AppCompat"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@color/colorLightDark"
+            android:layout_height="55dp"
+            android:background="@color/colorPrimary"
             android:fitsSystemWindows="true"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -29,7 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/wechat"
+                android:text="@string/todo"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/content_text_normal" />
 
@@ -50,7 +49,6 @@
                 android:clickable="true"
                 android:padding="@dimen/item_margin_left"
                 android:src="@drawable/search" />
-
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -123,63 +121,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/black" />
-
-    <LinearLayout
-        android:id="@+id/ll_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_weight="1"
-        android:background="@color/material_on_surface_stroke"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-
-        <Button
-            android:id="@+id/main_btn_homepage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:background="@color/material_on_surface_stroke"
-            android:text="首页"
-            android:textColor="@color/red"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/main_btn_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/material_on_surface_stroke"
-            android:text="面试"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/main_btn_algorithm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/material_on_surface_stroke"
-            android:text="算法"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/main_btn_article"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:background="@color/material_on_surface_stroke"
-            android:text="文章"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-    </LinearLayout>
+    <include
+        android:id="@+id/bolck_titlebar_todo"
+        layout="@layout/block_tabbar_todo" />
 
 </LinearLayout>
