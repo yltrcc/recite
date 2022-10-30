@@ -37,6 +37,7 @@
         <activity android:name=".activity.study.EditActivity" />
         <activity android:name=".activity.study.ChatActivity" />
         <activity android:name=".activity.todo.TodoHomePageActivity" />
+        <activity android:name=".activity.novel.NovelHomePageActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.yltrcc.app.recite.fileProvider"
